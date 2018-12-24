@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import xiaolan.daigou.dao.CommandeDao;
-import xiaolan.daigou.entity.Commande;
-import xiaolan.daigou.entity.SiteComparateur;
+import xiaolan.daigou.domain.entity.Commande;
 
 @Service
 public class CommandeServiceImpl implements CommandeService{

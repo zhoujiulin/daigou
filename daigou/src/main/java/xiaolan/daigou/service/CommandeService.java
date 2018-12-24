@@ -2,7 +2,7 @@ package xiaolan.daigou.service;
 
 import java.util.List;
 
-import xiaolan.daigou.entity.Commande;
+import xiaolan.daigou.domain.entity.Commande;
 
 public interface CommandeService {
 

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import xiaolan.daigou.dao.ArticleDao;
-import xiaolan.daigou.entity.Article;
+import xiaolan.daigou.domain.entity.Article;
 
 @Service
 public class ArticleServiceImpl implements ArticleService{

@@ -3,8 +3,8 @@ package xiaolan.daigou.dao;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import xiaolan.daigou.entity.Client;
-import xiaolan.daigou.entity.Commande;
+import xiaolan.daigou.domain.entity.Client;
+import xiaolan.daigou.domain.entity.Commande;
 
 @Repository
 @Transactional

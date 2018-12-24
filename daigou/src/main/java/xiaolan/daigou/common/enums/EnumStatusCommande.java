@@ -1,4 +1,4 @@
-package xiaolan.daigou.enums;
+package xiaolan.daigou.common.enums;
 
 public enum EnumStatusCommande {
     NEW_COMMANDE("Nouvelle commande", 1),

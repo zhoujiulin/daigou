@@ -7,7 +7,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import xiaolan.daigou.entity.Commande;
+import xiaolan.daigou.domain.entity.Commande;
 
 @Repository
 @Transactional

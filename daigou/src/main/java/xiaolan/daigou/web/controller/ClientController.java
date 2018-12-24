@@ -1,4 +1,4 @@
-package xiaolan.daigou.controller;
+package xiaolan.daigou.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import xiaolan.daigou.entity.Client;
+import xiaolan.daigou.domain.entity.Client;
 import xiaolan.daigou.service.ClientService;
 
 

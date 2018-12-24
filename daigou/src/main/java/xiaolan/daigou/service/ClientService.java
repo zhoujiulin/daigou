@@ -1,6 +1,6 @@
 package xiaolan.daigou.service;
 
-import xiaolan.daigou.entity.Client;
+import xiaolan.daigou.domain.entity.Client;
 
 public interface ClientService {
 	

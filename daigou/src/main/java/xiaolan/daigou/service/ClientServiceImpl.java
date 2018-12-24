@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import xiaolan.daigou.dao.ClientDao;
-import xiaolan.daigou.entity.Client;
+import xiaolan.daigou.domain.entity.Client;
 
 @Service
 public class ClientServiceImpl implements ClientService {

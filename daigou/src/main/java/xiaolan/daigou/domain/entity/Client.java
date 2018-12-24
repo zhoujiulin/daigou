@@ -1,4 +1,4 @@
-package xiaolan.daigou.entity;
+package xiaolan.daigou.domain.entity;
 
 
 import java.io.Serializable;

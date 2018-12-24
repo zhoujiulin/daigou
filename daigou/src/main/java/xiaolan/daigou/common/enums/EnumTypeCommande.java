@@ -1,4 +1,4 @@
-package xiaolan.daigou.enums;
+package xiaolan.daigou.common.enums;
 
 public enum EnumTypeCommande {
     COMMANDE_POUR_CLIENT(1),

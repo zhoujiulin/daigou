@@ -1,4 +1,4 @@
-package xiaolan.daigou.controller;
+package xiaolan.daigou.web.controller;
 
 import java.util.List;
 
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import xiaolan.daigou.entity.Client;
-import xiaolan.daigou.entity.Commande;
+import xiaolan.daigou.domain.entity.Client;
+import xiaolan.daigou.domain.entity.Commande;
 import xiaolan.daigou.service.ClientService;
 import xiaolan.daigou.service.CommandeService;
 
