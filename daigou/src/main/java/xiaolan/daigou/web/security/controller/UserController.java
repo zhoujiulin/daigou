@@ -27,7 +27,7 @@ public class UserController {
 	}
 	
 	@GetMapping(value="/getuser")
-	@PreAuthorize("hasRole('USER')")
+	//@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<Utilisateur> getUser(Principal principal){
 		Utilisateur utilisateur = userService.findByUsername(principal.getName());
 		return new ResponseEntity<Utilisateur>(utilisateur, HttpStatus.OK);

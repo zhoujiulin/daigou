@@ -24,7 +24,7 @@ public class CommandeDaoImpl extends BaseDaoImpl<Commande> implements CommandeDa
 	}
 
 	@Override
-	public List<Commande> getCommandesByStatus(List<Integer> statusList) {
+	public List<Commande> getCommandesByStatus(List<String> statusList) {
 		
         StringBuilder queryBuilder = new StringBuilder();
         
@@ -32,7 +32,8 @@ public class CommandeDaoImpl extends BaseDaoImpl<Commande> implements CommandeDa
         queryBuilder.append("(");
         
 		for(int i=0; i<statusList.size(); i++) {
-			queryBuilder.append(statusList.get(i));
+			String status = statusList.get(i);
+			queryBuilder.append(Integer.valueOf(status));
 			
 			if(i < statusList.size() - 1) {
 				queryBuilder.append(",");

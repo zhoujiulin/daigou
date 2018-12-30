@@ -14,5 +14,5 @@ public interface CommandeDao extends BaseDao<Commande>{
 
 	public Commande findCommandeByName();
 	
-	public List<Commande> getCommandesByStatus(List<Integer> statusList);
+	public List<Commande> getCommandesByStatus(List<String> statusList);
 }

@@ -1,12 +1,13 @@
 package xiaolan.daigou.service;
 
 import java.util.List;
+import java.util.Map;
 
 import xiaolan.daigou.domain.entity.Commande;
 
 public interface CommandeService {
 
-	Commande createCommande(Commande commande);
+	Commande createNewCommande(Commande commande);
 	
 	Commande updateCommande(Commande commande);
 	
@@ -14,5 +15,13 @@ public interface CommandeService {
 	
 	Commande findCommandeById(Long id);
 	
-	List<Commande> getCommandesByStatus(List<Integer> statusList);
+	List<Commande> getCommandesByStatus(List<String> statusList);
+
+	Map<Integer, String> getCommandeStatus();
+	
+	Map<String, String> getCommandeStatusGroup();
+	
+	Commande saveCommande(Commande commande);
+	
+	void deleteCommandeById(long idCommande);
 }

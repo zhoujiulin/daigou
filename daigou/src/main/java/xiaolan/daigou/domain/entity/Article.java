@@ -26,7 +26,7 @@ public class Article implements Serializable{
 	@Column(name="price_achat")
     private double priceAchat;
     
-	@Column(name="name_vente")
+	@Column(name="price_vente")
     private double priceVente;
     
 	@Column(name="count")

@@ -8,4 +8,7 @@ import xiaolan.daigou.domain.entity.Client;
 
 public interface ClientDao extends BaseDao<Client> {
 
+	Client findClientByName(Client client);
+	
+	Client findClientByName(String nameWechat, String nameLivraison);
 }
