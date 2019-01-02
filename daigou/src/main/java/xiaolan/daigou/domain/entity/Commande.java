@@ -57,6 +57,10 @@ public class Commande implements Serializable{
     
 	@Column(name="type_commande")
     private int typeCommande;
+	
+	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+	@JoinColumn(name = "utilisateur_id", nullable=false)
+	private Utilisateur utilisateur;
 
     public void setId(Long id){
         this.id = id;
@@ -123,4 +127,12 @@ public class Commande implements Serializable{
     }
 
     public int getTypeCommande(){ return this.typeCommande; }
+
+	public Utilisateur getUtilisateur() {
+		return utilisateur;
+	}
+
+	public void setUtilisateur(Utilisateur utilisateur) {
+		this.utilisateur = utilisateur;
+	}
 }

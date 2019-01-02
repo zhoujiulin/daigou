@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Table(name="Utilisateur")
 public class Utilisateur implements Serializable{
 	
-    private static final long serialVersionUID = 7901048489335996904L;
+    private static final long serialVersionUID = 7901048489335996909L;
     
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -47,7 +47,7 @@ public class Utilisateur implements Serializable{
 	
 	@Column(name="created_date")
     private Date createdDate;
-
+	
 	public Long getIdUser() {
 		return idUser;
 	}
@@ -126,9 +126,5 @@ public class Utilisateur implements Serializable{
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 }

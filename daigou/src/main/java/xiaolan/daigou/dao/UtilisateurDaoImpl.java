@@ -9,9 +9,9 @@ import xiaolan.daigou.domain.entity.Utilisateur;
 
 @Repository
 @Transactional
-public class UserDaoImpl extends BaseDaoImpl<Utilisateur> implements UserDao{
+public class UtilisateurDaoImpl extends BaseDaoImpl<Utilisateur> implements UtilisateurDao{
 
-	public UserDaoImpl() {
+	public UtilisateurDaoImpl() {
 		super(Utilisateur.class);
 	}
 

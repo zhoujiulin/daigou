@@ -3,11 +3,15 @@ package xiaolan.daigou.domain.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -35,6 +39,10 @@ public class Client implements Serializable{
 	
 	@Column(name="adresse")
 	private String adresse;
+	
+	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+	@JoinColumn(name = "utilisateur_id")
+	private Utilisateur utilisateur;
 
     public Client() {
 
@@ -80,7 +88,15 @@ public class Client implements Serializable{
         return this.adresse;
     }
     
-    @Override
+    public Utilisateur getUtilisateur() {
+		return utilisateur;
+	}
+
+	public void setUtilisateur(Utilisateur utilisateur) {
+		this.utilisateur = utilisateur;
+	}
+
+	@Override
     public String toString() {
         return "";
     }

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import xiaolan.daigou.common.utils.PasswordUtil;
-import xiaolan.daigou.dao.UserDao;
+import xiaolan.daigou.dao.UtilisateurDao;
 import xiaolan.daigou.domain.LoginUserForm;
 import xiaolan.daigou.domain.entity.Utilisateur;
 
@@ -15,7 +15,7 @@ import xiaolan.daigou.domain.entity.Utilisateur;
 public class UserServiceImpl implements UserService{
 
 	@Autowired
-	private UserDao userDao;
+	private UtilisateurDao userDao;
 	
 	@Override
 	public boolean login(LoginUserForm user) {
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public Utilisateur save(Utilisateur utilisateur) {
+	public Utilisateur inscription(Utilisateur utilisateur) {
 		String password = PasswordUtil.getPasswordHash(utilisateur.getPassword());
 		utilisateur.setPassword(password);
 		utilisateur.setCreatedDate(new Date());

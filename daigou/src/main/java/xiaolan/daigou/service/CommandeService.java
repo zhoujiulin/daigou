@@ -7,7 +7,7 @@ import xiaolan.daigou.domain.entity.Commande;
 
 public interface CommandeService {
 
-	Commande createNewCommande(Commande commande);
+	Commande createNewCommande(Commande commande, Long userId);
 	
 	Commande updateCommande(Commande commande);
 	
@@ -15,7 +15,7 @@ public interface CommandeService {
 	
 	Commande findCommandeById(Long id);
 	
-	List<Commande> getCommandesByStatus(List<String> statusList);
+	List<Commande> getCommandesByStatus(List<String> statusList, Long userId);
 
 	Map<Integer, String> getCommandeStatus();
 	
@@ -24,4 +24,6 @@ public interface CommandeService {
 	Commande saveCommande(Commande commande);
 	
 	void deleteCommandeById(long idCommande);
+	
+	Map<Integer, String> getArticleStatus();
 }

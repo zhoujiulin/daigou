@@ -1,6 +1,5 @@
 package xiaolan.daigou.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,12 +8,15 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import xiaolan.daigou.common.enums.EnumStatusArticle;
 import xiaolan.daigou.common.enums.EnumStatusCommande;
 import xiaolan.daigou.common.enums.EnumStatusCommandeGroup;
 import xiaolan.daigou.dao.ClientDao;
 import xiaolan.daigou.dao.CommandeDao;
+import xiaolan.daigou.dao.UtilisateurDao;
 import xiaolan.daigou.domain.entity.Client;
 import xiaolan.daigou.domain.entity.Commande;
+import xiaolan.daigou.domain.entity.Utilisateur;
 
 @Service
 public class CommandeServiceImpl implements CommandeService{
@@ -23,17 +25,25 @@ public class CommandeServiceImpl implements CommandeService{
 	private CommandeDao commandeDao;
 	
 	@Autowired
+	private UtilisateurDao utilisateurDao;
+	
+	@Autowired
 	private ClientDao clientDao;
 
 	@Override
-	public Commande createNewCommande(Commande commande) {
-		Client client = clientDao.findClientByName(commande.getClient());
+	public Commande createNewCommande(Commande commande, Long userId) {
+		Utilisateur utilisateur = utilisateurDao.findById(userId);
+		
+		Client client = clientDao.findClientByName(commande.getClient(), userId);
 		if(client != null) {
 			commande.setClient(client);
 		}
 		
+		commande.getClient().setUtilisateur(utilisateur);
+		
 		commande.setDateCreation(new Date());
 		commande.setStatus(EnumStatusCommande.NEW_COMMANDE.getIndex());
+		commande.setUtilisateur(utilisateur);
 		
 		Commande c= this.commandeDao.save(commande);
 		return c;
@@ -58,8 +68,8 @@ public class CommandeServiceImpl implements CommandeService{
 	}
 
 	@Override
-	public List<Commande> getCommandesByStatus(List<String> statusList) {
-		List<Commande> commandes = this.commandeDao.getCommandesByStatus(statusList);
+	public List<Commande> getCommandesByStatus(List<String> statusList, Long userId) {
+		List<Commande> commandes = this.commandeDao.getCommandesByStatus(statusList, userId);
 		return commandes;
 	}
 
@@ -92,6 +102,16 @@ public class CommandeServiceImpl implements CommandeService{
 			
 			String text = sb.toString().substring(0, sb.length() - 1);
 			map.put(text, group.getValue());
+		}
+		return map;
+	}
+
+	@Override
+	public Map<Integer, String> getArticleStatus() {
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		EnumStatusArticle[] statusList = EnumStatusArticle.values();
+		for(EnumStatusArticle status : statusList) {
+			map.put(status.getIndex(), status.getValue());
 		}
 		return map;
 	}

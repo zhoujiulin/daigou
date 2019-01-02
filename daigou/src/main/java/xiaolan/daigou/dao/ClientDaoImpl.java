@@ -17,16 +17,17 @@ public class ClientDaoImpl extends BaseDaoImpl<Client> implements ClientDao{
 	}
 
 	@Override
-	public Client findClientByName(Client client) {
+	public Client findClientByName(Client client, Long userId) {
 
-		return findClientByName(client.getNameWechat(), client.getNameLivraison());
+		return findClientByName(client.getNameWechat(), client.getNameLivraison(), userId);
 	}
 
 	@Override
-	public Client findClientByName(String nameWechat, String nameLivraison) {
-        Query query = em.createQuery(" from Client c where c.nameWechat = ? and c.nameLivraison = ?", this.clazz);
+	public Client findClientByName(String nameWechat, String nameLivraison, Long userId) {
+        Query query = em.createQuery(" from Client c where c.nameWechat = ? and c.nameLivraison = ? and c.utilisateur.idUser = ?", this.clazz);
         query.setParameter(0, nameWechat);
         query.setParameter(1, nameLivraison);
+        query.setParameter(2, userId);
         
 		return (Client) query.getResultList().stream().findFirst().orElse(null);
 	}

@@ -18,17 +18,11 @@ public class CommandeDaoImpl extends BaseDaoImpl<Commande> implements CommandeDa
 	}
 
 	@Override
-	public Commande findCommandeByName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Commande> getCommandesByStatus(List<String> statusList) {
+	public List<Commande> getCommandesByStatus(List<String> statusList, Long userId) {
 		
         StringBuilder queryBuilder = new StringBuilder();
         
-        queryBuilder.append(" from Commande c where c.status in ");
+        queryBuilder.append(" from Commande as c where c.utilisateur.idUser = ? and c.status in ");
         queryBuilder.append("(");
         
 		for(int i=0; i<statusList.size(); i++) {
@@ -43,6 +37,7 @@ public class CommandeDaoImpl extends BaseDaoImpl<Commande> implements CommandeDa
         queryBuilder.append(")");
         
         Query query = em.createQuery(queryBuilder.toString(), this.clazz);
+        query.setParameter(0, userId);
         
 		return query.getResultList();
 	}

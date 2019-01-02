@@ -2,7 +2,7 @@ package xiaolan.daigou.dao;
 
 import xiaolan.daigou.domain.entity.Utilisateur;
 
-public interface UserDao extends BaseDao<Utilisateur> {
+public interface UtilisateurDao extends BaseDao<Utilisateur> {
 
 	boolean login(Utilisateur user);
 	

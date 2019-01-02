@@ -13,7 +13,7 @@ public interface UserService {
 	
     Utilisateur findByUsername(String username);
     
-    Utilisateur save(Utilisateur utilisateur);
+    Utilisateur inscription(Utilisateur utilisateur);
 
 	List<Utilisateur> findAll();
 }

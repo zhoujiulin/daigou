@@ -1,10 +1,15 @@
 package xiaolan.daigou.web.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import xiaolan.daigou.domain.entity.Commande;
 import xiaolan.daigou.service.CommandeService;
+import xiaolan.daigou.web.security.jwt.JwtUser;
 
 
 @RestController
@@ -28,9 +34,10 @@ public class CommandeController {
 	
 	@PostMapping(value="/creationcommande")
 	@ResponseBody
-	public Commande creationCommande(@RequestBody Commande commande){
+	public Commande creationCommande(@RequestBody Commande commande, Authentication authentication){
+		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
 		
-		return this.commandeService.createNewCommande(commande);
+		return this.commandeService.createNewCommande(commande, jwtUser.getId());
 	}
 	
 	@GetMapping(value="/commande/{id}")
@@ -39,16 +46,10 @@ public class CommandeController {
 		return this.commandeService.findCommandeById(id);
 	}
 	
-	@GetMapping(value="/all")
-	public List<Commande> getAllCommandes() {
-		
-		return this.commandeService.findAll();
-	}
-	
 	@GetMapping(value="/status")
-	public List<Commande> getCommandesByStatus(@RequestParam(value = "status") List<String> statusList) {
-		
-		return this.commandeService.getCommandesByStatus(statusList);
+	public List<Commande> getCommandesByStatus(@RequestParam(value = "status") List<String> statusList, Authentication authentication) {
+		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
+		return this.commandeService.getCommandesByStatus(statusList, jwtUser.getId());
 	}
 	
 	@GetMapping(value="/commandestatus")
@@ -61,6 +62,12 @@ public class CommandeController {
 	public Map<String, String> getCommandeStatusGroup() {
 		
 		return this.commandeService.getCommandeStatusGroup();
+	}
+	
+	@GetMapping(value="/articlestatus")
+	public Map<Integer, String> getArticleStatus() {
+		
+		return this.commandeService.getArticleStatus();
 	}
 	
 	@PostMapping(value="/updatecommande")
