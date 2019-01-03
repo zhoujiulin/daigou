@@ -1,5 +1,6 @@
 package xiaolan.daigou.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import xiaolan.daigou.common.enums.EnumStatusCommandeGroup;
 import xiaolan.daigou.dao.ClientDao;
 import xiaolan.daigou.dao.CommandeDao;
 import xiaolan.daigou.dao.UtilisateurDao;
+import xiaolan.daigou.domain.entity.Article;
 import xiaolan.daigou.domain.entity.Client;
 import xiaolan.daigou.domain.entity.Commande;
 import xiaolan.daigou.domain.entity.Utilisateur;
@@ -74,12 +76,15 @@ public class CommandeServiceImpl implements CommandeService{
 	}
 
 	@Override
-	public Map<Integer, String> getCommandeStatus() {
-		Map<Integer, String> map = new HashMap<Integer, String>();
+	public Map<Integer, Map<String, String>> getCommandeStatus() {
+		Map<Integer, Map<String, String>> map = new HashMap<Integer, Map<String, String>>();
 		EnumStatusCommande[] statusList = EnumStatusCommande.values();
 		
 		for(EnumStatusCommande status : statusList) {
-			map.put(status.getIndex(), status.getValue());
+			Map<String, String> valueMap = new HashMap<String, String>();
+			valueMap.put(status.getValue(), status.getColor());
+			
+			map.put(status.getIndex(), valueMap);
 		}
 		return map;
 	}
@@ -107,17 +112,42 @@ public class CommandeServiceImpl implements CommandeService{
 	}
 
 	@Override
-	public Map<Integer, String> getArticleStatus() {
-		Map<Integer, String> map = new HashMap<Integer, String>();
+	public Map<Integer, Map<String, String>> getArticleStatus() {
+		Map<Integer, Map<String, String>> map = new HashMap<Integer, Map<String, String>>();
 		EnumStatusArticle[] statusList = EnumStatusArticle.values();
 		for(EnumStatusArticle status : statusList) {
-			map.put(status.getIndex(), status.getValue());
+			Map<String, String> valueMap = new HashMap<String, String>();
+			valueMap.put(status.getValue(), status.getColor());
+			map.put(status.getIndex(), valueMap);
 		}
 		return map;
 	}
-
+	
 	@Override
 	public Commande saveCommande(Commande commande) {
+		List<Article> articles = new ArrayList<Article>();
+		
+		for(Article article : commande.getArticles()) {
+			int count = article.getCount();
+			int countAchete = article.getCountArticleAchete();
+			int countFromStockageEnFrance = article.getCountArticleFromStockageFrance();
+			int countFromStockageEnChine = article.getCountArticleFromStockageChine();
+			int countFromStockageEnRoute = article.getCountArticleFromStockageEnRoute();
+			
+			int countPrepare = countAchete + countFromStockageEnFrance + countFromStockageEnChine + countFromStockageEnRoute;
+			if(count == countPrepare) {
+				article.setStatusArticle(EnumStatusArticle.PREPARE_BIEN.getIndex());
+			}else if(count < countPrepare) {
+				article.setStatusArticle(EnumStatusArticle.QTE_INCORRECT.getIndex());
+			}else if(count > countPrepare && countPrepare != 0) {
+				article.setStatusArticle(EnumStatusArticle.PREPARE_PARTIE.getIndex());
+			}else {
+				article.setStatusArticle(EnumStatusArticle.NON_PREPARE.getIndex());
+			}
+			
+			articles.add(article);
+		}
+		commande.setArticles(articles);
 		
 		return this.commandeDao.save(commande);
 	}

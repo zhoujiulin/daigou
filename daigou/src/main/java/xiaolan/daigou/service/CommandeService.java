@@ -3,6 +3,7 @@ package xiaolan.daigou.service;
 import java.util.List;
 import java.util.Map;
 
+import xiaolan.daigou.common.enums.EnumStatusArticle;
 import xiaolan.daigou.domain.entity.Commande;
 
 public interface CommandeService {
@@ -17,7 +18,7 @@ public interface CommandeService {
 	
 	List<Commande> getCommandesByStatus(List<String> statusList, Long userId);
 
-	Map<Integer, String> getCommandeStatus();
+	Map<Integer, Map<String, String>> getCommandeStatus();
 	
 	Map<String, String> getCommandeStatusGroup();
 	
@@ -25,5 +26,5 @@ public interface CommandeService {
 	
 	void deleteCommandeById(long idCommande);
 	
-	Map<Integer, String> getArticleStatus();
+	Map<Integer, Map<String, String>> getArticleStatus();
 }

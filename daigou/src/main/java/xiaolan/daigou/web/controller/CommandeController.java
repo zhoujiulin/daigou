@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import xiaolan.daigou.common.enums.EnumStatusArticle;
 import xiaolan.daigou.domain.entity.Commande;
 import xiaolan.daigou.service.CommandeService;
 import xiaolan.daigou.web.security.jwt.JwtUser;
@@ -53,7 +54,7 @@ public class CommandeController {
 	}
 	
 	@GetMapping(value="/commandestatus")
-	public Map<Integer, String> getCommandeStatus() {
+	public Map<Integer, Map<String, String>> getCommandeStatus() {
 		
 		return this.commandeService.getCommandeStatus();
 	}
@@ -65,7 +66,7 @@ public class CommandeController {
 	}
 	
 	@GetMapping(value="/articlestatus")
-	public Map<Integer, String> getArticleStatus() {
+	public Map<Integer, Map<String, String>> getArticleStatus() {
 		
 		return this.commandeService.getArticleStatus();
 	}
