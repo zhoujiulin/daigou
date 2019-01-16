@@ -26,11 +26,14 @@ public class JwtTokenUtil implements Serializable{
 	static final String CLAM_KEY_AUDIENCE = "audience";
 	static final String CLAM_KEY_CREATED = "created";
 	
-	@Value("${jwt.secret}")
-	private String secret;
+	static final String SECRET = "Lokesh";
+	static final int EXPIRATION = 604800;
 	
-	@Value("${jwt.expiration}")
-	private Long expiration;
+//	@Value("${jwt.secret}")
+//	private String secret;
+//	
+//	@Value("${jwt.expiration}")
+//	private Long expiration;
 	
 	public String getUsernameFromToken(String token) {
 		String username = null;
@@ -47,7 +50,7 @@ public class JwtTokenUtil implements Serializable{
 	private Claims getClaimsFromToken(String token) {
 		Claims claims = null;
 		try {
-			claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+			claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
 		}catch (Exception e) {
 			claims = null;
 		}
@@ -88,11 +91,11 @@ public class JwtTokenUtil implements Serializable{
 	}
 
 	private String generateToken(Map<String, Object> clamis) {
-		return Jwts.builder().setClaims(clamis).setExpiration(generateExpirationDate()).signWith(SignatureAlgorithm.HS512, secret).compact();
+		return Jwts.builder().setClaims(clamis).setExpiration(generateExpirationDate()).signWith(SignatureAlgorithm.HS512, SECRET).compact();
 	}
 
 	private Date generateExpirationDate() {
-		return new Date(System.currentTimeMillis() + expiration * 1000);
+		return new Date(System.currentTimeMillis() + EXPIRATION * 1000);
 	}
 
 }
