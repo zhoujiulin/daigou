@@ -125,9 +125,18 @@ public class CommandeServiceImpl implements CommandeService{
 	
 	@Override
 	public Commande saveCommande(Commande commande) {
-		List<Article> articles = new ArrayList<Article>();
+		List<Article> articles = computeStatusArticle(commande.getArticles());
+		commande.setArticles(articles);
 		
-		for(Article article : commande.getArticles()) {
+		commande = computeStatusCommande(commande);
+		
+		return this.commandeDao.save(commande);
+	}
+	
+	private List<Article> computeStatusArticle(List<Article> articles){
+		List<Article> articleList = new ArrayList<Article>();
+		
+		for(Article article : articles) {
 			int count = article.getCount();
 			int countAchete = article.getCountArticleAchete();
 			int countFromStockageEnFrance = article.getCountArticleFromStockageFrance();
@@ -145,11 +154,42 @@ public class CommandeServiceImpl implements CommandeService{
 				article.setStatusArticle(EnumStatusArticle.NON_PREPARE.getIndex());
 			}
 			
-			articles.add(article);
+			articleList.add(article);
 		}
-		commande.setArticles(articles);
 		
-		return this.commandeDao.save(commande);
+		return articleList;
+	}
+	
+	private Commande computeStatusCommande(Commande commande) {
+		EnumStatusCommande statusCommande = EnumStatusCommande.COMMANDE_PRET_A_ENVOYER;
+		
+		boolean isArticleNonPrepare = true;
+		for(Article article : commande.getArticles()) {
+			if(article.getStatusArticle() == EnumStatusArticle.PREPARE_PARTIE.getIndex()) {
+				statusCommande = EnumStatusCommande.COMMANDE_PARTIE_PRET;
+			}
+			if(article.getStatusArticle() != EnumStatusArticle.NON_PREPARE.getIndex()) {
+				isArticleNonPrepare = false;
+			}
+		}
+		
+		if(isArticleNonPrepare) {
+			statusCommande = EnumStatusCommande.NEW_COMMANDE;
+		}
+		
+		if(statusCommande == EnumStatusCommande.COMMANDE_PRET_A_ENVOYER) {
+			String nameWechat = commande.getClient().getNameWechat();
+			String nameLivraison = commande.getClient().getNameLivraison();
+			String telephone = commande.getClient().getTelephone();
+			String adresse = commande.getClient().getAdresse();
+			if(nameWechat == null || "".equals(nameWechat) || nameLivraison == null || "".equals(nameLivraison) || telephone == null || "".equals(telephone) || adresse == null || "".equals(adresse)) {
+				statusCommande = EnumStatusCommande.COMMANDE_MANQUE_INFO_CLIENT;
+			}
+		}
+		
+		commande.setStatus(statusCommande.getIndex());
+		
+		return commande;
 	}
 
 	@Override
