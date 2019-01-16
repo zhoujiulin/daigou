@@ -23,9 +23,6 @@ import xiaolan.daigou.web.security.jwt.JwtUser;
 @RestController
 public class AuthenticationController {
 
-	@Value("${jwt.header}")
-	private String tokenHeader;
-	
 	@Autowired 
 	private AuthenticationManager authenticationManager;
 	

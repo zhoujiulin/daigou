@@ -22,12 +22,12 @@ public class JwtTokenUtil implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	static final String CLAM_KEY_USERNAME = "sub";
-	static final String CLAM_KEY_AUDIENCE = "audience";
-	static final String CLAM_KEY_CREATED = "created";
+	private static final String CLAM_KEY_USERNAME = "sub";
+	private static final String CLAM_KEY_AUDIENCE = "audience";
+	private static final String CLAM_KEY_CREATED = "created";
 	
-	static final String SECRET = "Lokesh";
-	static final int EXPIRATION = 604800;
+	private static final String SECRET = "Lokesh";
+	private static final int EXPIRATION = 604800;
 	
 //	@Value("${jwt.secret}")
 //	private String secret;

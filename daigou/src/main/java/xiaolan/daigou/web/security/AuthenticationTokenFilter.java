@@ -26,14 +26,15 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter{
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 	
-	@Value("${jwt.header}")
-	private String tokenHeader;
+	private static final String TOKEN_HEADER = "Authorization";
+//	@Value("${jwt.header}")
+//	private String tokenHeader;
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		
-		String authToken = request.getHeader(this.tokenHeader);
+		String authToken = request.getHeader(TOKEN_HEADER);
 		if(authToken != null && authToken.length() > 7) {
 			authToken = authToken.substring(7);
 		}
