@@ -2,11 +2,15 @@ package xiaolan.daigou.domain.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -31,6 +35,10 @@ public class ArticleModel implements Serializable{
     
 	@Column(name="price_vente_model")
     private double priceVenteModel;
+	
+	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+	@JoinColumn(name = "utilisateur_id", nullable=false)
+	private Utilisateur utilisateur;
 
     public void setIdArticleModel(Long idArticleModel){ this.idArticleModel = idArticleModel; }
 
@@ -51,4 +59,12 @@ public class ArticleModel implements Serializable{
     public double getPriceVenteModel(){
         return this.priceVenteModel;
     }
+    
+	public Utilisateur getUtilisateur() {
+		return utilisateur;
+	}
+
+	public void setUtilisateur(Utilisateur utilisateur) {
+		this.utilisateur = utilisateur;
+	}
 }

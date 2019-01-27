@@ -2,11 +2,15 @@ package xiaolan.daigou.domain.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -37,6 +41,10 @@ public class ArticleStockage implements Serializable{
     
 	@Column(name="count_stokcage_en_route")
     private int countStockageEnRoute;
+	
+	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+	@JoinColumn(name = "utilisateur_id", nullable=false)
+	private Utilisateur utilisateur;
 
     public ArticleStockage() {
 
@@ -83,4 +91,12 @@ public class ArticleStockage implements Serializable{
     public int getCountStockageEnRoute(){
         return this.countStockageEnRoute;
     }
+    
+	public Utilisateur getUtilisateur() {
+		return utilisateur;
+	}
+
+	public void setUtilisateur(Utilisateur utilisateur) {
+		this.utilisateur = utilisateur;
+	}
 }

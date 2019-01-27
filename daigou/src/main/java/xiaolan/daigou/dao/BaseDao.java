@@ -18,4 +18,6 @@ public interface BaseDao<T> {
 	T findById(Long id);
 	
 	List<T> getAll();
+	
+	List<T> getAll(long userId);
 }

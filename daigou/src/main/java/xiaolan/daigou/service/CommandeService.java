@@ -12,8 +12,6 @@ public interface CommandeService {
 	
 	Commande updateCommande(Commande commande);
 	
-	List<Commande> findAll();
-	
 	Commande findCommandeById(Long id);
 	
 	List<Commande> getCommandesByStatus(List<String> statusList, Long userId);

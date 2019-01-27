@@ -22,6 +22,8 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
     protected static final String SPACE = " ";
     protected static final String AND = " and ";
     protected static final String WHERE = " where ";
+    protected static final String AS = " as ";
+    protected static final String EQAL = " = ";
 	
 	@PersistenceContext(type = PersistenceContextType.TRANSACTION)
     EntityManager em;
@@ -80,4 +82,23 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
         return contentQuery.getResultList();
 	}
 
+	@Override
+	public List<T> getAll(long userId) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append(FROM);
+        queryBuilder.append(this.clazz.getSimpleName());
+        queryBuilder.append(AS);
+        queryBuilder.append("c");
+        queryBuilder.append(WHERE);
+        queryBuilder.append("c.utilisateur.idUser");
+        queryBuilder.append(EQAL);
+        queryBuilder.append("?");
+
+//        TypedQuery<T> query = em.createQuery(queryBuilder.toString(), this.clazz);
+//        query.setParameter("userId", useId);
+        Query query = em.createQuery(queryBuilder.toString(), this.clazz);
+        query.setParameter(0, userId);
+
+        return query.getResultList();
+	}
 }

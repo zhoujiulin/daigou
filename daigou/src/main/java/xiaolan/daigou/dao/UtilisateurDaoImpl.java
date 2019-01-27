@@ -16,17 +16,11 @@ public class UtilisateurDaoImpl extends BaseDaoImpl<Utilisateur> implements Util
 	}
 
 	@Override
-	public boolean login(Utilisateur user) {
-
-		return false;
-	}
-
-	@Override
 	public Utilisateur findByUsername(String username) {
 
         String sql = " from Utilisateur u where u.username='" + username + "'";
         Query query = em.createQuery(sql, this.clazz);
         
-		return (Utilisateur) query.getResultList().get(0);
+		return (Utilisateur) query.getSingleResult();
 	}
 }

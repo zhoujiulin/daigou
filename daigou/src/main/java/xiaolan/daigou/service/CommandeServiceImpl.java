@@ -58,12 +58,6 @@ public class CommandeServiceImpl implements CommandeService{
 	}
 
 	@Override
-	public List<Commande> findAll() {
-		
-		return this.commandeDao.getAll();
-	}
-
-	@Override
 	public Commande findCommandeById(Long id) {
 
 		return this.commandeDao.findById(id);
