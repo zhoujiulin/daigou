@@ -1,4 +1,4 @@
-package xiaolan.daigou.dao;
+package xiaolan.daigou.dao.impl;
 
 import java.util.List;
 
@@ -10,6 +10,8 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import xiaolan.daigou.dao.BaseDao;
 
 @Transactional
 public class BaseDaoImpl<T> implements BaseDao<T>{

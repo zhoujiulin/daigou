@@ -2,18 +2,35 @@ package xiaolan.daigou.domain.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.springframework.lang.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="article")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idArticle")
 public class Article implements Serializable{
 	
-    private static final long serialVersionUID = 7901048489335996904L;
+	private static final long serialVersionUID = 1L;
     
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -46,7 +63,17 @@ public class Article implements Serializable{
     
 	@Column(name="status_article")
     private int statusArticle;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "colis_id")
+	@JsonIgnoreProperties("articles")
+	private Colis colis;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "commande_id")
+	@JsonIgnoreProperties("articles")
+	private Commande commande;
+	
     public Article() {
 
     }
@@ -122,4 +149,20 @@ public class Article implements Serializable{
     public int getStatusArticle(){
         return this.statusArticle;
     }
+
+	public Colis getColis() {
+		return colis;
+	}
+
+	public void setColis(Colis colis) {
+		this.colis = colis;
+	}
+
+	public Commande getCommande() {
+		return commande;
+	}
+
+	public void setCommande(Commande commande) {
+		this.commande = commande;
+	}
 }

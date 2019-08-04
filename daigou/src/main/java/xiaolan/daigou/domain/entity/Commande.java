@@ -1,7 +1,10 @@
 package xiaolan.daigou.domain.entity;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,31 +17,41 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 @Entity
 @Table(name="commande")
+//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Commande.class)
+//@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class,property="@id", scope = Commande.class)
+//@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Commande implements Serializable{
 
     /**
      * serialVersionUID
      */
-    private static final long serialVersionUID = 7901048489335996904L;
+	private static final long serialVersionUID = 3L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 	
 	@ManyToOne(fetch=FetchType.EAGER, cascade = {CascadeType.ALL})
-	@JoinColumn(name="client_id", nullable=false)
+	@JoinColumn(name="client_id")
     private Client client;
     
-    @OneToMany(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "commande_id")
-    private List<Article> articles = new ArrayList<Article>();
+	@OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OrderBy
+	@JsonIgnoreProperties("commande")
+	private Set<Article> articles = new HashSet<Article>();
     
 	@Column(name="date_creation")
     private Date dateCreation;
@@ -58,7 +71,7 @@ public class Commande implements Serializable{
 	@Column(name="type_commande")
     private int typeCommande;
 	
-	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "utilisateur_id", nullable=false)
 	private Utilisateur utilisateur;
 
@@ -75,16 +88,16 @@ public class Commande implements Serializable{
     public Client getClient(){
         return this.client;
     }
+    
+    public Set<Article> getArticles() {
+		return articles;
+	}
 
-    public void setArticles(List<Article> articles){
-        this.articles = articles;
-    }
+	public void setArticles(Set<Article> articles) {
+		this.articles = articles;
+	}
 
-    public List<Article> getArticles(){
-        return this.articles;
-    }
-
-    public Date getDateCreation() {
+	public Date getDateCreation() {
 		return dateCreation;
 	}
 
@@ -135,4 +148,18 @@ public class Commande implements Serializable{
 	public void setUtilisateur(Utilisateur utilisateur) {
 		this.utilisateur = utilisateur;
 	}
+	
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+        	return true;
+        }
+        if (o == null || getClass() != o.getClass()) { 
+        	return false;
+        }
+        
+        Commande commande = (Commande) o;
+        return Objects.equals(id, commande.getId());
+    }
 }

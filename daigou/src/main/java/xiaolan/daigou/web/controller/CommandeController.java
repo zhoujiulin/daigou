@@ -2,6 +2,7 @@ package xiaolan.daigou.web.controller;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import xiaolan.daigou.common.enums.EnumStatusArticle;
+import xiaolan.daigou.common.enums.EnumTypeCommande;
 import xiaolan.daigou.domain.entity.Commande;
 import xiaolan.daigou.service.CommandeService;
 import xiaolan.daigou.web.security.jwt.JwtUser;
@@ -57,6 +59,16 @@ public class CommandeController {
 	public Map<Integer, Map<String, String>> getCommandeStatus() {
 		
 		return this.commandeService.getCommandeStatus();
+	}
+	
+	@GetMapping(value="/gettypecommande")
+	public Map<Integer, String> getTypeCommande() {
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		
+		for(EnumTypeCommande typeCommande : EnumTypeCommande.values()) {
+			map.put(typeCommande.getIndex(), typeCommande.getLibelle());
+		}
+		return map;
 	}
 	
 	@GetMapping(value="/commandestatusgroup")

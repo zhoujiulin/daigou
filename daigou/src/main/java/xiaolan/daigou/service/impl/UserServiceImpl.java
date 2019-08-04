@@ -1,4 +1,4 @@
-package xiaolan.daigou.service;
+package xiaolan.daigou.service.impl;
 
 import java.util.Date;
 import java.util.List;
@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import xiaolan.daigou.common.utils.PasswordUtil;
 import xiaolan.daigou.dao.UtilisateurDao;
 import xiaolan.daigou.domain.LoginUserForm;
+import xiaolan.daigou.domain.entity.Commande;
 import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService{

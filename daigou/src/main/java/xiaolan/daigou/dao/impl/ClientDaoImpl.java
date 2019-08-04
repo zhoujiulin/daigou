@@ -1,10 +1,11 @@
-package xiaolan.daigou.dao;
+package xiaolan.daigou.dao.impl;
 
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import xiaolan.daigou.dao.ClientDao;
 import xiaolan.daigou.domain.entity.Client;
 import xiaolan.daigou.domain.entity.Commande;
 

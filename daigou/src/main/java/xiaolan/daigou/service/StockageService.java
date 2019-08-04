@@ -9,4 +9,8 @@ public interface StockageService {
 	List<ArticleStockage> getAllStockage(long userId);
 	
 	ArticleStockage createArticleStockage(ArticleStockage articleStockage, long userId);
+	
+	ArticleStockage saveArticleStokage(ArticleStockage articleStockage);
+	
+	ArticleStockage findById(Long id);
 }

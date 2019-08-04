@@ -5,7 +5,7 @@ public enum EnumStatusCommande {
     COMMANDE_PARTIE_PRET("Partie prêt", 2, DaigouConstant.CSS_ORANGE, EnumStatusCommandeGroup.COMMANDE_NON_ENVOYEE),
     COMMANDE_PARTIE_PRET_A_ENVOYER("Partie prêt à envoyer", 3, DaigouConstant.CSS_JAUNE, EnumStatusCommandeGroup.COMMANDE_NON_ENVOYEE),
     COMMANDE_PRET_A_ENVOYER("Commande prêt à envoyer", 4, DaigouConstant.CSS_VERT, EnumStatusCommandeGroup.COMMANDE_NON_ENVOYEE),
-    EN_COURS_DE_ENVOYER("En cours d'envoyer", 5, DaigouConstant.CSS_JAUNE, EnumStatusCommandeGroup.COMMANDE_NON_ARRIVEE),
+    COMMANDE_SUR_LA_ROUTE("Commande sur la route", 5, DaigouConstant.CSS_JAUNE, EnumStatusCommandeGroup.COMMANDE_NON_ARRIVEE),
     COMMANDE_MANQUE_INFO_CLIENT("Commande manque info client", 7, DaigouConstant.CSS_ORANGE, EnumStatusCommandeGroup.COMMANDE_NON_ARRIVEE),
     COMMANDE_PRET_A_DISTRIBUER("Commande prêt à distribuer", 8, DaigouConstant.CSS_VERT, EnumStatusCommandeGroup.COMMANDE_NON_ARRIVEE),
     TERMINE("Terminé", 9, DaigouConstant.CSS_VERT, EnumStatusCommandeGroup.COMMANDE_TERMINEE);

@@ -40,7 +40,7 @@ public class Client implements Serializable{
 	@Column(name="adresse")
 	private String adresse;
 	
-	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
 	@JoinColumn(name = "utilisateur_id")
 	private Utilisateur utilisateur;
 

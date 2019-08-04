@@ -1,10 +1,12 @@
-package xiaolan.daigou.service;
+package xiaolan.daigou.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,13 +14,17 @@ import org.springframework.stereotype.Service;
 import xiaolan.daigou.common.enums.EnumStatusArticle;
 import xiaolan.daigou.common.enums.EnumStatusCommande;
 import xiaolan.daigou.common.enums.EnumStatusCommandeGroup;
+import xiaolan.daigou.common.enums.EnumTypeCommande;
 import xiaolan.daigou.dao.ClientDao;
+import xiaolan.daigou.dao.ColisDao;
 import xiaolan.daigou.dao.CommandeDao;
 import xiaolan.daigou.dao.UtilisateurDao;
 import xiaolan.daigou.domain.entity.Article;
 import xiaolan.daigou.domain.entity.Client;
+import xiaolan.daigou.domain.entity.Colis;
 import xiaolan.daigou.domain.entity.Commande;
 import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.service.CommandeService;
 
 @Service
 public class CommandeServiceImpl implements CommandeService{
@@ -31,21 +37,34 @@ public class CommandeServiceImpl implements CommandeService{
 	
 	@Autowired
 	private ClientDao clientDao;
+	
+	@Autowired
+	private ColisDao colisDao;
 
 	@Override
 	public Commande createNewCommande(Commande commande, Long userId) {
 		Utilisateur utilisateur = utilisateurDao.findById(userId);
 		
-		Client client = clientDao.findClientByName(commande.getClient(), userId);
-		if(client != null) {
-			commande.setClient(client);
+		if(commande.getTypeCommande() == EnumTypeCommande.COMMANDE_SANS_CLIENT.getIndex()) {
+			commande.setClient(null);
+		}else {
+			Client client = clientDao.findClientByName(commande.getClient(), userId);
+			if(client != null) {
+				commande.setClient(client);
+			}
+			
+			commande.getClient().setUtilisateur(utilisateur);
 		}
-		
-		commande.getClient().setUtilisateur(utilisateur);
 		
 		commande.setDateCreation(new Date());
 		commande.setStatus(EnumStatusCommande.NEW_COMMANDE.getIndex());
 		commande.setUtilisateur(utilisateur);
+		commande.setTypeCommande(EnumTypeCommande.COMMANDE_CLIENT.getIndex());
+		
+		// je suis vraiment con, mais je sais pas régler ce pb
+		for(Article a : commande.getArticles()) {
+			a.setCommande(commande);
+		}
 		
 		Commande c= this.commandeDao.save(commande);
 		return c;
@@ -119,16 +138,18 @@ public class CommandeServiceImpl implements CommandeService{
 	
 	@Override
 	public Commande saveCommande(Commande commande) {
-		List<Article> articles = computeStatusArticle(commande.getArticles());
+		Set<Article> articles = computeStatusArticle(commande.getArticles());
 		commande.setArticles(articles);
 		
 		commande = computeStatusCommande(commande);
-		
+		for(Article article : commande.getArticles()) {
+			article.setCommande(commande);
+		}
 		return this.commandeDao.save(commande);
 	}
 	
-	private List<Article> computeStatusArticle(List<Article> articles){
-		List<Article> articleList = new ArrayList<Article>();
+	private Set<Article> computeStatusArticle(Set<Article> articles){
+		Set<Article> articleList = new HashSet<Article>();
 		
 		for(Article article : articles) {
 			int count = article.getCount();
@@ -158,17 +179,27 @@ public class CommandeServiceImpl implements CommandeService{
 		EnumStatusCommande statusCommande = EnumStatusCommande.COMMANDE_PRET_A_ENVOYER;
 		
 		boolean isArticleNonPrepare = true;
+		boolean isArticlePretAEnvoyer = true;
 		for(Article article : commande.getArticles()) {
 			if(article.getStatusArticle() == EnumStatusArticle.PREPARE_PARTIE.getIndex()) {
 				statusCommande = EnumStatusCommande.COMMANDE_PARTIE_PRET;
+				isArticlePretAEnvoyer = false;
 			}
 			if(article.getStatusArticle() != EnumStatusArticle.NON_PREPARE.getIndex()) {
 				isArticleNonPrepare = false;
+			}else {
+				isArticlePretAEnvoyer = false;
 			}
 		}
 		
 		if(isArticleNonPrepare) {
 			statusCommande = EnumStatusCommande.NEW_COMMANDE;
+		}else {
+			statusCommande = EnumStatusCommande.COMMANDE_PARTIE_PRET;
+		}
+		
+		if(isArticlePretAEnvoyer) {
+			statusCommande = EnumStatusCommande.COMMANDE_PRET_A_ENVOYER;
 		}
 		
 		if(statusCommande == EnumStatusCommande.COMMANDE_PRET_A_ENVOYER) {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import xiaolan.daigou.common.enums.EnumStatusArticle;
+import xiaolan.daigou.common.enums.EnumTypeCommande;
 import xiaolan.daigou.domain.entity.Commande;
 
 public interface CommandeService {

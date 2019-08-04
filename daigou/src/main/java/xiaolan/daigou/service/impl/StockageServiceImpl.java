@@ -1,4 +1,4 @@
-package xiaolan.daigou.service;
+package xiaolan.daigou.service.impl;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import xiaolan.daigou.dao.StockageDao;
 import xiaolan.daigou.dao.UtilisateurDao;
 import xiaolan.daigou.domain.entity.ArticleStockage;
 import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.service.StockageService;
 
 @Service
 public class StockageServiceImpl implements StockageService {
@@ -41,5 +42,15 @@ public class StockageServiceImpl implements StockageService {
 			
 			return this.stockageDao.save(articleStockage);
 		}
+	}
+
+	@Override
+	public ArticleStockage saveArticleStokage(ArticleStockage articleStockage) {
+		return this.stockageDao.save(articleStockage);
+	}
+
+	@Override
+	public ArticleStockage findById(Long id) {
+		return this.stockageDao.findById(id);
 	}
 }

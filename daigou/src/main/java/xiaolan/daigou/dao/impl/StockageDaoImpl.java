@@ -1,4 +1,4 @@
-package xiaolan.daigou.dao;
+package xiaolan.daigou.dao.impl;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -6,6 +6,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import xiaolan.daigou.dao.StockageDao;
 import xiaolan.daigou.domain.entity.ArticleModel;
 import xiaolan.daigou.domain.entity.ArticleStockage;
 import xiaolan.daigou.domain.entity.Utilisateur;
