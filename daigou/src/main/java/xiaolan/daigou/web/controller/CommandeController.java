@@ -77,12 +77,6 @@ public class CommandeController {
 		return this.commandeService.getCommandeStatusGroup();
 	}
 	
-	@GetMapping(value="/articlestatus")
-	public Map<Integer, Map<String, String>> getArticleStatus() {
-		
-		return this.commandeService.getArticleStatus();
-	}
-	
 	@PostMapping(value="/updatecommande")
 	@ResponseBody
 	public Commande updateCommande(@RequestBody Commande commande){

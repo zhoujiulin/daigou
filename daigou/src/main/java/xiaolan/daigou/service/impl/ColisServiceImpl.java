@@ -69,17 +69,20 @@ public class ColisServiceImpl implements ColisService {
 			article.setColis(colis);
 		}
 		
-		return colisDao.save(colis);
+		colis = colisDao.save(colis);
+		
+		this.computeCommandePourEnvoyerColis(colis);
+		return colis;
 	}
 	
-	private void computeEnvoyerCommande(Colis colis) {
+	private void computeCommandePourEnvoyerColis(Colis colis) {
 		List<Commande> fullSendCommandes = new ArrayList<Commande>(); 
 		List<Commande> partSendCommande = new ArrayList<Commande>(); 
 		
 		for(Article article : colis.getArticles()) {
 			Commande commande = this.commandeDao.findById(article.getCommande().getId());
 			
-			if(!fullSendCommandes.contains(commande) && partSendCommande.contains(commande)) {
+			if(!fullSendCommandes.contains(commande) && !partSendCommande.contains(commande)) {
 				boolean isFullSend = isFullSendCommandes(commande, article, colis);
 				if(isFullSend) {
 					fullSendCommandes.add(commande);

@@ -61,17 +61,10 @@ public class CommandeServiceImpl implements CommandeService{
 		commande.setUtilisateur(utilisateur);
 		commande.setTypeCommande(EnumTypeCommande.COMMANDE_CLIENT.getIndex());
 		
-		// je suis vraiment con, mais je sais pas régler ce pb
 		for(Article a : commande.getArticles()) {
 			a.setCommande(commande);
 		}
 		
-		Commande c= this.commandeDao.save(commande);
-		return c;
-	}
-
-	@Override
-	public Commande updateCommande(Commande commande) {
 		Commande c= this.commandeDao.save(commande);
 		return c;
 	}
@@ -123,18 +116,6 @@ public class CommandeServiceImpl implements CommandeService{
 		}
 		return map;
 	}
-
-	@Override
-	public Map<Integer, Map<String, String>> getArticleStatus() {
-		Map<Integer, Map<String, String>> map = new HashMap<Integer, Map<String, String>>();
-		EnumStatusArticle[] statusList = EnumStatusArticle.values();
-		for(EnumStatusArticle status : statusList) {
-			Map<String, String> valueMap = new HashMap<String, String>();
-			valueMap.put(status.getValue(), status.getColor());
-			map.put(status.getIndex(), valueMap);
-		}
-		return map;
-	}
 	
 	@Override
 	public Commande saveCommande(Commande commande) {
@@ -160,13 +141,13 @@ public class CommandeServiceImpl implements CommandeService{
 			
 			int countPrepare = countAchete + countFromStockageEnFrance + countFromStockageEnChine + countFromStockageEnRoute;
 			if(count == countPrepare) {
-				article.setStatusArticle(EnumStatusArticle.PREPARE_BIEN.getIndex());
+				article.setStatusArticle(EnumStatusArticle.PREPARE_BIEN);
 			}else if(count < countPrepare) {
-				article.setStatusArticle(EnumStatusArticle.QTE_INCORRECT.getIndex());
+				article.setStatusArticle(EnumStatusArticle.QTE_INCORRECT);
 			}else if(count > countPrepare && countPrepare != 0) {
-				article.setStatusArticle(EnumStatusArticle.PREPARE_PARTIE.getIndex());
+				article.setStatusArticle(EnumStatusArticle.PREPARE_PARTIE);
 			}else {
-				article.setStatusArticle(EnumStatusArticle.NON_PREPARE.getIndex());
+				article.setStatusArticle(EnumStatusArticle.NON_PREPARE);
 			}
 			
 			articleList.add(article);
@@ -181,11 +162,11 @@ public class CommandeServiceImpl implements CommandeService{
 		boolean isArticleNonPrepare = true;
 		boolean isArticlePretAEnvoyer = true;
 		for(Article article : commande.getArticles()) {
-			if(article.getStatusArticle() == EnumStatusArticle.PREPARE_PARTIE.getIndex()) {
+			if(article.getStatusArticle() == EnumStatusArticle.PREPARE_PARTIE) {
 				statusCommande = EnumStatusCommande.COMMANDE_PARTIE_PRET;
 				isArticlePretAEnvoyer = false;
 			}
-			if(article.getStatusArticle() != EnumStatusArticle.NON_PREPARE.getIndex()) {
+			if(article.getStatusArticle() != EnumStatusArticle.NON_PREPARE) {
 				isArticleNonPrepare = false;
 			}else {
 				isArticlePretAEnvoyer = false;

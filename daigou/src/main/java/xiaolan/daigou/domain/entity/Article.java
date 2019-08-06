@@ -25,9 +25,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import xiaolan.daigou.common.enums.EnumStatusArticle;
+
 @Entity
 @Table(name="article")
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idArticle")
 public class Article implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -62,14 +63,15 @@ public class Article implements Serializable{
     private int countArticleFromStockageChine;
     
 	@Column(name="status_article")
-    private int statusArticle;
+//    private int statusArticle;
+	private EnumStatusArticle statusArticle;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
 	@JoinColumn(name = "colis_id")
 	@JsonIgnoreProperties("articles")
 	private Colis colis;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
 	@JoinColumn(name = "commande_id")
 	@JsonIgnoreProperties("articles")
 	private Commande commande;
@@ -142,14 +144,22 @@ public class Article implements Serializable{
         return this.countArticleFromStockageChine;
     }
 
-    public void setStatusArticle(int statusArticle){
-        this.statusArticle = statusArticle;
-    }
+//    public void setStatusArticle(int statusArticle){
+//        this.statusArticle = statusArticle;
+//    }
+//
+//    public int getStatusArticle(){
+//        return this.statusArticle;
+//    }
+    
+	public EnumStatusArticle getStatusArticle() {
+		return statusArticle;
+	}
 
-    public int getStatusArticle(){
-        return this.statusArticle;
-    }
-
+	public void setStatusArticle(EnumStatusArticle statusArticle) {
+		this.statusArticle = statusArticle;
+	}
+    
 	public Colis getColis() {
 		return colis;
 	}

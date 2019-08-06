@@ -30,9 +30,6 @@ import java.util.ArrayList;
 
 @Entity
 @Table(name="commande")
-//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Commande.class)
-//@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class,property="@id", scope = Commande.class)
-//@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Commande implements Serializable{
 
     /**
@@ -50,7 +47,7 @@ public class Commande implements Serializable{
     
 	@OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@OrderBy
-	@JsonIgnoreProperties("commande")
+	@JsonIgnoreProperties(value  = {"commande"}, allowSetters = true)
 	private Set<Article> articles = new HashSet<Article>();
     
 	@Column(name="date_creation")
@@ -75,6 +72,13 @@ public class Commande implements Serializable{
 	@JoinColumn(name = "utilisateur_id", nullable=false)
 	private Utilisateur utilisateur;
 
+	public Commande() {
+	}
+	
+	public Commande(Long id) {
+		this.id = id;
+	}
+	
     public void setId(Long id){
         this.id = id;
     }

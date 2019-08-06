@@ -1,17 +1,24 @@
 package xiaolan.daigou.common.enums;
 
-public enum EnumStatusArticle {
-    NON_PREPARE("Non préparé", 1, DaigouConstant.CSS_RED),
-    PREPARE_PARTIE("Préparé une partie", 2, DaigouConstant.CSS_ORANGE),
-    PREPARE_BIEN("Tout préparé", 3, DaigouConstant.CSS_VERT),
-    QTE_INCORRECT("Nombre incorrect", 4, DaigouConstant.CSS_RED);
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import  xiaolan.daigou.common.serialize.StatusArticleDeserializer;
 
+import xiaolan.daigou.common.enums.inter.BaseEnum;
 
+@JsonDeserialize(using = StatusArticleDeserializer.class)
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum EnumStatusArticle implements BaseEnum{
+    NON_PREPARE("1", "Non préparé", DaigouConstant.CSS_RED),
+    PREPARE_PARTIE("2", "Préparé une partie", DaigouConstant.CSS_ORANGE),
+    PREPARE_BIEN("3", "Tout préparé", DaigouConstant.CSS_VERT),
+    QTE_INCORRECT("4", "Nombre incorrect", DaigouConstant.CSS_RED);
+
+    private String index;
     private String value;
-    private int index;
     private String color;
 
-    private EnumStatusArticle(String value, int index, String color){
+    private EnumStatusArticle(String index, String value, String color){
         this.index = index;
         this.value = value;
         this.color = color;
@@ -20,17 +27,17 @@ public enum EnumStatusArticle {
     public static String getValueByIndex(int index) {
         String value = null;
         for(EnumStatusArticle status : values()) {
-            if(status.getIndex() == index) {
+            if(status.getIndex() == String.valueOf(index)) {
                 value = status.getValue();
             }
         }
         return value;
     }
 
-    public void setIndex(int index){
+    public void setIndex(String index){
         this.index = index;
     }
-    public int getIndex(){
+    public String getIndex(){
         return this.index;
     }
 

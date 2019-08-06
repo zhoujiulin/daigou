@@ -58,7 +58,7 @@ public class Colis implements Serializable{
 	private Utilisateur utilisateur;
 
 	@OneToMany(mappedBy = "colis", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonIgnoreProperties("colis")
+	@JsonIgnoreProperties(value  = {"colis"}, allowSetters = true)
     private List<Article> articles = new ArrayList<Article>();
 	
 	public Colis() {
