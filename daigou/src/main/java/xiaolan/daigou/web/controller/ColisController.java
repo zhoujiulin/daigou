@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import xiaolan.daigou.common.enums.EnumStatusColis;
 import xiaolan.daigou.domain.entity.ArticleStockage;
 import xiaolan.daigou.domain.entity.Colis;
 import xiaolan.daigou.service.ColisService;
@@ -36,10 +37,16 @@ public class ColisController {
 		return this.colisService.createColis(colis, jwtUser.getId());
 	}
 	
+//	@GetMapping(value="/getcolisstatus")
+//	public Map<Integer, String> getColisStatus() {
+//		
+//		return this.colisService.getColisStatus();
+//	}
+	
 	@GetMapping(value="/getcolisstatus")
-	public Map<Integer, String> getColisStatus() {
+	public EnumStatusColis[] getColisStatus() {
 		
-		return this.colisService.getColisStatus();
+		return EnumStatusColis.values();
 	}
 	
 	@GetMapping(value="/getcolisbystatus/{status}")

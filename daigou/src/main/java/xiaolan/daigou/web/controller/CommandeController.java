@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import xiaolan.daigou.common.enums.EnumStatusArticle;
+import xiaolan.daigou.common.enums.EnumStatusCommande;
+import xiaolan.daigou.common.enums.EnumStatusCommandeGroup;
 import xiaolan.daigou.common.enums.EnumTypeCommande;
 import xiaolan.daigou.domain.entity.Commande;
 import xiaolan.daigou.service.CommandeService;
@@ -60,7 +62,7 @@ public class CommandeController {
 		
 		return this.commandeService.getCommandeStatus();
 	}
-	
+
 	@GetMapping(value="/gettypecommande")
 	public Map<Integer, String> getTypeCommande() {
 		Map<Integer, String> map = new HashMap<Integer, String>();

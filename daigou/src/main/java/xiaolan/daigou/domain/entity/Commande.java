@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -24,6 +25,10 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import xiaolan.daigou.common.converter.StatusArticleConverter;
+import xiaolan.daigou.common.converter.StatusCommandeConverter;
+import xiaolan.daigou.common.enums.EnumStatusCommande;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -63,7 +68,8 @@ public class Commande implements Serializable{
     private Date dateTermine;
     
 	@Column(name="status")
-    private int status;
+	@Convert(converter = StatusCommandeConverter.class)
+	private EnumStatusCommande status;
     
 	@Column(name="type_commande")
     private int typeCommande;
@@ -132,14 +138,16 @@ public class Commande implements Serializable{
 	public void setDateTermine(Date dateTermine) {
 		this.dateTermine = dateTermine;
 	}
+	
+    public EnumStatusCommande getStatus() {
+		return status;
+	}
 
-	public void setStatus(int status){
-        this.status = status;
-    }
+	public void setStatus(EnumStatusCommande status) {
+		this.status = status;
+	}
 
-    public int getStatus(){ return this.status; }
-
-    public void setTypeCommande(int typeCommande){
+	public void setTypeCommande(int typeCommande){
         this.typeCommande = typeCommande;
     }
 

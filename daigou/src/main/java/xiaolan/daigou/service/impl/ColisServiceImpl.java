@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class ColisServiceImpl implements ColisService {
 			String date = formatter.format(new Date());
 			colis.setNameColis(date);
 		}
-		colis.setStatusColis(EnumStatusColis.COLIS_NON_ENVOYE.getIndex());
+		colis.setStatusColis(EnumStatusColis.COLIS_NON_ENVOYE);
 		return this.colisDao.save(colis);
 	}
 
@@ -64,14 +65,13 @@ public class ColisServiceImpl implements ColisService {
 
 	@Override
 	public Colis envoyerColis(Colis colis) {
-		colis.setStatusColis(EnumStatusColis.COLIS_ENVOYE_VERS_CHINE.getIndex());
+		colis.setStatusColis(EnumStatusColis.COLIS_ENVOYE_VERS_CHINE);
 		for(Article article : colis.getArticles()) {
 			article.setColis(colis);
 		}
-		
-		colis = colisDao.save(colis);
-		
+
 		this.computeCommandePourEnvoyerColis(colis);
+		colis = colisDao.save(colis);
 		return colis;
 	}
 	
@@ -100,26 +100,39 @@ public class ColisServiceImpl implements ColisService {
 		for(Commande commande : partSendCommande) {
 			Commande newCommande = new Commande();
 			newCommande.setClient(commande.getClient());
-			newCommande.setStatus(EnumStatusCommande.COMMANDE_SUR_LA_ROUTE.getIndex());
+			newCommande.setStatus(EnumStatusCommande.COMMANDE_SUR_LA_ROUTE);
 			newCommande.setTypeCommande(commande.getTypeCommande());
+			newCommande.setUtilisateur(colis.getUtilisateur());
 			
-			
-			for(Article article : commande.getArticles()) {
+			for (Iterator<Article> it = commande.getArticles().iterator(); it.hasNext();) {
+				Article article = it.next();
 				if(article.getColis() != null && article.getColis().getIdColis() == colis.getIdColis()) {
+
+					// update les articles de colis
+					for (Iterator<Article> iter = colis.getArticles().iterator(); iter.hasNext();) {
+						Article a = iter.next();
+						if(a.getIdArticle() == article.getIdArticle()) {
+							iter.remove();
+						}
+					}
+					
+					article.setCommande(newCommande);
 					newCommande.getArticles().add(article);
 					
-					commande.getArticles().remove(article);
+					it.remove();
 				}
-			}
+			} 
 			
 			this.commandeDao.save(commande);
-			this.commandeDao.save(newCommande);
+			newCommande = this.commandeDao.save(newCommande);
+			// update les articles de colis
+			colis.getArticles().addAll(newCommande.getArticles());
 		}
 	}
 
 	private void updateStatusCommandeForFullSendCommande(List<Commande> fullSendCommandes) {
 		for(Commande commande : fullSendCommandes) {
-			commande.setStatus(EnumStatusCommande.COMMANDE_SUR_LA_ROUTE.getIndex());
+			commande.setStatus(EnumStatusCommande.COMMANDE_SUR_LA_ROUTE);
 			this.commandeDao.save(commande);
 		}
 	}

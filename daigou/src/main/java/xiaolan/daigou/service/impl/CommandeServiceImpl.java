@@ -57,12 +57,13 @@ public class CommandeServiceImpl implements CommandeService{
 		}
 		
 		commande.setDateCreation(new Date());
-		commande.setStatus(EnumStatusCommande.NEW_COMMANDE.getIndex());
+		commande.setStatus(EnumStatusCommande.NEW_COMMANDE);
 		commande.setUtilisateur(utilisateur);
 		commande.setTypeCommande(EnumTypeCommande.COMMANDE_CLIENT.getIndex());
 		
 		for(Article a : commande.getArticles()) {
 			a.setCommande(commande);
+			a.setStatusArticle(computeStatusArticle(a));
 		}
 		
 		Commande c= this.commandeDao.save(commande);
@@ -99,7 +100,7 @@ public class CommandeServiceImpl implements CommandeService{
 	public Map<String, String> getCommandeStatusGroup() {
 		Map<String, String> map = new HashMap<String, String>();
 		EnumStatusCommande[] statusList = EnumStatusCommande.values();
-		
+
 		EnumStatusCommandeGroup[] statusGroupList = EnumStatusCommandeGroup.values();
 		for(EnumStatusCommandeGroup group : statusGroupList) {
 			StringBuilder sb = new StringBuilder();
@@ -133,27 +134,30 @@ public class CommandeServiceImpl implements CommandeService{
 		Set<Article> articleList = new HashSet<Article>();
 		
 		for(Article article : articles) {
-			int count = article.getCount();
-			int countAchete = article.getCountArticleAchete();
-			int countFromStockageEnFrance = article.getCountArticleFromStockageFrance();
-			int countFromStockageEnChine = article.getCountArticleFromStockageChine();
-			int countFromStockageEnRoute = article.getCountArticleFromStockageEnRoute();
-			
-			int countPrepare = countAchete + countFromStockageEnFrance + countFromStockageEnChine + countFromStockageEnRoute;
-			if(count == countPrepare) {
-				article.setStatusArticle(EnumStatusArticle.PREPARE_BIEN);
-			}else if(count < countPrepare) {
-				article.setStatusArticle(EnumStatusArticle.QTE_INCORRECT);
-			}else if(count > countPrepare && countPrepare != 0) {
-				article.setStatusArticle(EnumStatusArticle.PREPARE_PARTIE);
-			}else {
-				article.setStatusArticle(EnumStatusArticle.NON_PREPARE);
-			}
-			
+			article.setStatusArticle(computeStatusArticle(article));
 			articleList.add(article);
 		}
 		
 		return articleList;
+	}
+	
+	private EnumStatusArticle computeStatusArticle(Article article){
+		int count = article.getCount();
+		int countAchete = article.getCountArticleAchete();
+		int countFromStockageEnFrance = article.getCountArticleFromStockageFrance();
+		int countFromStockageEnChine = article.getCountArticleFromStockageChine();
+		int countFromStockageEnRoute = article.getCountArticleFromStockageEnRoute();
+		
+		int countPrepare = countAchete + countFromStockageEnFrance + countFromStockageEnChine + countFromStockageEnRoute;
+		if(count == countPrepare) {
+			return EnumStatusArticle.PREPARE_BIEN;
+		}else if(count < countPrepare) {
+			return EnumStatusArticle.QTE_INCORRECT;
+		}else if(count > countPrepare && countPrepare != 0) {
+			return EnumStatusArticle.PREPARE_PARTIE;
+		}else {
+			return EnumStatusArticle.NON_PREPARE;
+		}
 	}
 	
 	private Commande computeStatusCommande(Commande commande) {
@@ -193,7 +197,7 @@ public class CommandeServiceImpl implements CommandeService{
 			}
 		}
 		
-		commande.setStatus(statusCommande.getIndex());
+		commande.setStatus(statusCommande);
 		
 		return commande;
 	}

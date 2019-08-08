@@ -7,6 +7,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import xiaolan.daigou.common.enums.EnumStatusColis;
 import xiaolan.daigou.dao.ColisDao;
 import xiaolan.daigou.domain.entity.Colis;
 
@@ -23,10 +24,10 @@ public class ColisDaoImpl extends BaseDaoImpl<Colis> implements ColisDao {
         StringBuilder queryBuilder = new StringBuilder();
         
         queryBuilder.append(" from Colis as c where c.utilisateur.idUser = ? and c.statusColis = ?");
-        
+           
         Query query = em.createQuery(queryBuilder.toString(), this.clazz);
         query.setParameter(0, idUser);
-        query.setParameter(1, status);
+        query.setParameter(1, EnumStatusColis.getValueByIndex(status));
         
 		return query.getResultList();
 	}

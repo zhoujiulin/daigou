@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -24,11 +25,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import xiaolan.daigou.common.converter.StatusArticleConverter;
+import xiaolan.daigou.common.converter.StatusColisConverter;
+import xiaolan.daigou.common.enums.EnumStatusColis;
+
 @Entity
 @Table(name="colis")
-//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property = "idColis", scope = Colis.class)
-//@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class,property="@idColis", scope = Colis.class)
-//@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Colis implements Serializable{
 	
 	private static final long serialVersionUID = 2L;
@@ -36,22 +38,23 @@ public class Colis implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="id_colis")
-    Long idColis;
+	private Long idColis;
     
 	@Column(name="name_colis")
-	String nameColis;
+	private String nameColis;
 	
 	@Column(name="commentaire_colis")
-    String commentaireColis;
+	private String commentaireColis;
 	
 	@Column(name="status_colis")
-    int statusColis;
+	@Convert(converter = StatusColisConverter.class)
+	private EnumStatusColis statusColis;
 	
 	@Column(name="date_envoyer")
-    Date dateEnvoyer;
+	private Date dateEnvoyer;
 	
 	@Column(name="date_arriver")
-    Date dateArriver;
+	private Date dateArriver;
     
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "utilisateur_id", nullable=false)
@@ -83,15 +86,16 @@ public class Colis implements Serializable{
 	public void setCommentaireColis(String commentaireColis) {
 		this.commentaireColis = commentaireColis;
 	}
-	public int getStatusColis() {
-		return statusColis;
-	}
-	public void setStatusColis(int statusColis) {
-		this.statusColis = statusColis;
-	}
 	public Date getDateEnvoyer() {
 		return dateEnvoyer;
 	}
+	public EnumStatusColis getStatusColis() {
+		return statusColis;
+	}
+	public void setStatusColis(EnumStatusColis statusColis) {
+		this.statusColis = statusColis;
+	}
+
 	public void setDateEnvoyer(Date dateEnvoyer) {
 		this.dateEnvoyer = dateEnvoyer;
 	}

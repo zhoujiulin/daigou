@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import xiaolan.daigou.common.converter.StatusArticleConverter;
 import xiaolan.daigou.common.enums.EnumStatusArticle;
 
 @Entity
@@ -63,7 +67,8 @@ public class Article implements Serializable{
     private int countArticleFromStockageChine;
     
 	@Column(name="status_article")
-//    private int statusArticle;
+	//@Enumerated(EnumType.STRING)
+	@Convert(converter = StatusArticleConverter.class)
 	private EnumStatusArticle statusArticle;
 	
 	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
@@ -143,14 +148,6 @@ public class Article implements Serializable{
     public int getCountArticleFromStockageChine(){
         return this.countArticleFromStockageChine;
     }
-
-//    public void setStatusArticle(int statusArticle){
-//        this.statusArticle = statusArticle;
-//    }
-//
-//    public int getStatusArticle(){
-//        return this.statusArticle;
-//    }
     
 	public EnumStatusArticle getStatusArticle() {
 		return statusArticle;
