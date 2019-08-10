@@ -9,7 +9,7 @@ import  xiaolan.daigou.common.serialize.StatusArticleDeserializer;
 public enum EnumStatusArticle{
     NON_PREPARE(1, "Non préparé", DaigouConstant.CSS_RED),
     PREPARE_PARTIE(2, "Préparé une partie", DaigouConstant.CSS_ORANGE),
-    PREPARE_BIEN(3, "Tout préparé", DaigouConstant.CSS_VERT),
+    PREPARE_TOUT(3, "Tout préparé", DaigouConstant.CSS_VERT),
     QTE_INCORRECT(4, "Nombre incorrect", DaigouConstant.CSS_RED);
 
     private int index;

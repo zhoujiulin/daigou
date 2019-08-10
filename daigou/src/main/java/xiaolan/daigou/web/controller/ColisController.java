@@ -37,12 +37,6 @@ public class ColisController {
 		return this.colisService.createColis(colis, jwtUser.getId());
 	}
 	
-//	@GetMapping(value="/getcolisstatus")
-//	public Map<Integer, String> getColisStatus() {
-//		
-//		return this.colisService.getColisStatus();
-//	}
-	
 	@GetMapping(value="/getcolisstatus")
 	public EnumStatusColis[] getColisStatus() {
 		
@@ -60,5 +54,12 @@ public class ColisController {
 	public Colis envoyerColis(@RequestBody Colis colis, Authentication authentication) {
 		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
 		return this.colisService.envoyerColis(colis);
+	}
+	
+	@PostMapping(value="/arrivercolis")
+	@ResponseBody
+	public Colis arriverColis(@RequestBody Colis colis, Authentication authentication) {
+		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
+		return this.colisService.arriverColis(colis);
 	}
 }

@@ -15,6 +15,7 @@ import xiaolan.daigou.common.enums.EnumStatusArticle;
 import xiaolan.daigou.common.enums.EnumStatusCommande;
 import xiaolan.daigou.common.enums.EnumStatusCommandeGroup;
 import xiaolan.daigou.common.enums.EnumTypeCommande;
+import xiaolan.daigou.common.utils.DaigouUtil;
 import xiaolan.daigou.dao.ClientDao;
 import xiaolan.daigou.dao.ColisDao;
 import xiaolan.daigou.dao.CommandeDao;
@@ -56,7 +57,6 @@ public class CommandeServiceImpl implements CommandeService{
 			commande.getClient().setUtilisateur(utilisateur);
 		}
 		
-		commande.setDateCreation(new Date());
 		commande.setStatus(EnumStatusCommande.NEW_COMMANDE);
 		commande.setUtilisateur(utilisateur);
 		commande.setTypeCommande(EnumTypeCommande.COMMANDE_CLIENT.getIndex());
@@ -64,6 +64,7 @@ public class CommandeServiceImpl implements CommandeService{
 		for(Article a : commande.getArticles()) {
 			a.setCommande(commande);
 			a.setStatusArticle(computeStatusArticle(a));
+			a.setDateCreation(new Date());
 		}
 		
 		Commande c= this.commandeDao.save(commande);
@@ -123,9 +124,19 @@ public class CommandeServiceImpl implements CommandeService{
 		Set<Article> articles = computeStatusArticle(commande.getArticles());
 		commande.setArticles(articles);
 		
-		commande = computeStatusCommande(commande);
+		commande = DaigouUtil.computeStatusCommande(commande);
+
 		for(Article article : commande.getArticles()) {
 			article.setCommande(commande);
+			
+			if(article.getColis() != null) {
+				Colis colis = colisDao.findById(article.getColis().getIdColis());
+				article.setColis(colis);
+			}
+			
+			if(article.getDateCreation() == null) {
+				article.setDateCreation(new Date());
+			}
 		}
 		return this.commandeDao.save(commande);
 	}
@@ -150,7 +161,7 @@ public class CommandeServiceImpl implements CommandeService{
 		
 		int countPrepare = countAchete + countFromStockageEnFrance + countFromStockageEnChine + countFromStockageEnRoute;
 		if(count == countPrepare) {
-			return EnumStatusArticle.PREPARE_BIEN;
+			return EnumStatusArticle.PREPARE_TOUT;
 		}else if(count < countPrepare) {
 			return EnumStatusArticle.QTE_INCORRECT;
 		}else if(count > countPrepare && countPrepare != 0) {
@@ -158,48 +169,6 @@ public class CommandeServiceImpl implements CommandeService{
 		}else {
 			return EnumStatusArticle.NON_PREPARE;
 		}
-	}
-	
-	private Commande computeStatusCommande(Commande commande) {
-		EnumStatusCommande statusCommande = EnumStatusCommande.COMMANDE_PRET_A_ENVOYER;
-		
-		boolean isArticleNonPrepare = true;
-		boolean isArticlePretAEnvoyer = true;
-		for(Article article : commande.getArticles()) {
-			if(article.getStatusArticle() == EnumStatusArticle.PREPARE_PARTIE) {
-				statusCommande = EnumStatusCommande.COMMANDE_PARTIE_PRET;
-				isArticlePretAEnvoyer = false;
-			}
-			if(article.getStatusArticle() != EnumStatusArticle.NON_PREPARE) {
-				isArticleNonPrepare = false;
-			}else {
-				isArticlePretAEnvoyer = false;
-			}
-		}
-		
-		if(isArticleNonPrepare) {
-			statusCommande = EnumStatusCommande.NEW_COMMANDE;
-		}else {
-			statusCommande = EnumStatusCommande.COMMANDE_PARTIE_PRET;
-		}
-		
-		if(isArticlePretAEnvoyer) {
-			statusCommande = EnumStatusCommande.COMMANDE_PRET_A_ENVOYER;
-		}
-		
-		if(statusCommande == EnumStatusCommande.COMMANDE_PRET_A_ENVOYER) {
-			String nameWechat = commande.getClient().getNameWechat();
-			String nameLivraison = commande.getClient().getNameLivraison();
-			String telephone = commande.getClient().getTelephone();
-			String adresse = commande.getClient().getAdresse();
-			if(nameWechat == null || "".equals(nameWechat) || nameLivraison == null || "".equals(nameLivraison) || telephone == null || "".equals(telephone) || adresse == null || "".equals(adresse)) {
-				statusCommande = EnumStatusCommande.COMMANDE_MANQUE_INFO_CLIENT;
-			}
-		}
-		
-		commande.setStatus(statusCommande);
-		
-		return commande;
 	}
 
 	@Override

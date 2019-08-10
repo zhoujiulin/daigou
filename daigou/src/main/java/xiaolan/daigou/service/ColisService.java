@@ -9,10 +9,10 @@ public interface ColisService {
 
 	Colis createColis(Colis colis, Long idUser);
 	
-	Map<Integer, String> getColisStatus();
-	
 	List<Colis> getColisByStatus(int status, Long idUser);
 
 	Colis envoyerColis(Colis colis);
+	
+	Colis arriverColis(Colis colis);
 }
 

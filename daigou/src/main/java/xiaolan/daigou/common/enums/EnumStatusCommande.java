@@ -15,12 +15,12 @@ import xiaolan.daigou.common.serialize.StatusCommandeGroupDeserializer;
 public enum EnumStatusCommande {
     NEW_COMMANDE(1, "Nouvelle commande", DaigouConstant.CSS_RED, EnumStatusCommandeGroup.COMMANDE_NON_ENVOYEE),
     COMMANDE_PARTIE_PRET(2, "Partie prêt", DaigouConstant.CSS_ORANGE, EnumStatusCommandeGroup.COMMANDE_NON_ENVOYEE),
-    COMMANDE_PARTIE_PRET_A_ENVOYER(3, "Partie prêt à envoyer", DaigouConstant.CSS_JAUNE, EnumStatusCommandeGroup.COMMANDE_NON_ENVOYEE),
+    COMMANDE_PARTIE_PRET_A_ENVOYER(3, "Partie prêt à envoyer", DaigouConstant.CSS_ORANGE, EnumStatusCommandeGroup.COMMANDE_NON_ENVOYEE),
     COMMANDE_PRET_A_ENVOYER(4, "Commande prêt à envoyer", DaigouConstant.CSS_VERT, EnumStatusCommandeGroup.COMMANDE_NON_ENVOYEE),
-    COMMANDE_SUR_LA_ROUTE(5, "Commande sur la route", DaigouConstant.CSS_JAUNE, EnumStatusCommandeGroup.COMMANDE_NON_ARRIVEE),
-    COMMANDE_MANQUE_INFO_CLIENT(7, "Commande manque info client", DaigouConstant.CSS_ORANGE, EnumStatusCommandeGroup.COMMANDE_NON_ARRIVEE),
-    COMMANDE_PRET_A_DISTRIBUER(8, "Commande prêt à distribuer", DaigouConstant.CSS_VERT, EnumStatusCommandeGroup.COMMANDE_NON_ARRIVEE),
-    TERMINE(9, "Terminé", DaigouConstant.CSS_VERT, EnumStatusCommandeGroup.COMMANDE_TERMINEE);
+    COMMANDE_SUR_LA_ROUTE(5, "Commande sur la route", DaigouConstant.CSS_VERT, EnumStatusCommandeGroup.COMMANDE_ENVOYEE),
+    COMMANDE_MANQUE_INFO_CLIENT(6, "Commande manque info client", DaigouConstant.CSS_ORANGE, EnumStatusCommandeGroup.COMMANDE_ARRIVEE),
+    COMMANDE_PRET_A_DISTRIBUER(7, "Commande prêt à distribuer", DaigouConstant.CSS_VERT, EnumStatusCommandeGroup.COMMANDE_ARRIVEE),
+    TERMINE(8, "Terminé", DaigouConstant.CSS_VERT, EnumStatusCommandeGroup.COMMANDE_TERMINEE);
 
     private int index;
     private String value;

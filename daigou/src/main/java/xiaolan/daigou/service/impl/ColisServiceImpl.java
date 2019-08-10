@@ -11,9 +11,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import xiaolan.daigou.common.enums.EnumStatusArticle;
 import xiaolan.daigou.common.enums.EnumStatusColis;
 import xiaolan.daigou.common.enums.EnumStatusCommande;
 import xiaolan.daigou.common.enums.EnumStatusCommandeGroup;
+import xiaolan.daigou.common.utils.DaigouUtil;
 import xiaolan.daigou.dao.ColisDao;
 import xiaolan.daigou.dao.CommandeDao;
 import xiaolan.daigou.dao.UtilisateurDao;
@@ -49,30 +51,51 @@ public class ColisServiceImpl implements ColisService {
 	}
 
 	@Override
-	public Map<Integer, String> getColisStatus() {
-		Map<Integer, String> map = new HashMap<Integer, String>();
-		
-		for(EnumStatusColis e : EnumStatusColis.values()) {
-			map.put(e.getIndex(), e.getValue());
-		}
-		
-		return map;
-	}
-	@Override
 	public List<Colis> getColisByStatus(int status, Long idUser) {
 		return colisDao.getColisByStatus(status, idUser);
 	}
 
 	@Override
 	public Colis envoyerColis(Colis colis) {
-		colis.setStatusColis(EnumStatusColis.COLIS_ENVOYE_VERS_CHINE);
 		for(Article article : colis.getArticles()) {
 			article.setColis(colis);
+			article.setDateEnvoie(new Date());
 		}
-
 		this.computeCommandePourEnvoyerColis(colis);
+		
+		colis = this.colisDao.findById(colis.getIdColis());
+		colis.setStatusColis(EnumStatusColis.COLIS_ENVOYE_VERS_CHINE);
+		colis.setDateEnvoyer(new Date());
+		colis = colisDao.save(colis);
+		
+		return colis;
+	}
+	
+	@Override
+	public Colis arriverColis(Colis colis) {
+		this.computeCommandePourArriverColis(colis);
+		
+		colis = this.colisDao.findById(colis.getIdColis());
+		colis.setDateArriver(new Date());
+		colis.setStatusColis(EnumStatusColis.COLIS_ARRIVE_EN_CHINE);
+		
 		colis = colisDao.save(colis);
 		return colis;
+	}
+	
+	private void computeCommandePourArriverColis(Colis colis) {
+		List<Commande> commandes = new ArrayList<Commande>(); 
+		
+		for(Article article : colis.getArticles()) {
+			Commande commande = this.commandeDao.findById(article.getCommande().getId());
+
+			if(!commandes.contains(commande)){
+				commande.setStatus(DaigouUtil.isCommandeArriveePretADistribuer(commande));
+				commandes.add(commande);
+			}
+		}
+		
+		this.updateStatusCommandeForFullSendCommande(commandes, colis);
 	}
 	
 	private void computeCommandePourEnvoyerColis(Colis colis) {
@@ -92,48 +115,102 @@ public class ColisServiceImpl implements ColisService {
 			}
 		}
 		
-		this.updateStatusCommandeForFullSendCommande(fullSendCommandes);
+		this.updateStatusCommandeForFullSendCommande(fullSendCommandes, colis);
 		this.updateStatusCommandeForPartSendCommande(partSendCommande, colis);
 	}
 	
 	private void updateStatusCommandeForPartSendCommande(List<Commande> partSendCommande, Colis colis) {
 		for(Commande commande : partSendCommande) {
-			Commande newCommande = new Commande();
-			newCommande.setClient(commande.getClient());
-			newCommande.setStatus(EnumStatusCommande.COMMANDE_SUR_LA_ROUTE);
-			newCommande.setTypeCommande(commande.getTypeCommande());
-			newCommande.setUtilisateur(colis.getUtilisateur());
+			Commande newCommande = DaigouUtil.createNewObjectCommande(commande, colis.getUtilisateur(), EnumStatusCommande.COMMANDE_SUR_LA_ROUTE);
 			
 			for (Iterator<Article> it = commande.getArticles().iterator(); it.hasNext();) {
 				Article article = it.next();
-				if(article.getColis() != null && article.getColis().getIdColis() == colis.getIdColis()) {
-
-					// update les articles de colis
-					for (Iterator<Article> iter = colis.getArticles().iterator(); iter.hasNext();) {
-						Article a = iter.next();
-						if(a.getIdArticle() == article.getIdArticle()) {
-							iter.remove();
-						}
-					}
+				if(article.getColis() != null && article.getColis().getIdColis().longValue() == colis.getIdColis().longValue()) {
 					
 					article.setCommande(newCommande);
-					newCommande.getArticles().add(article);
-					
-					it.remove();
+					if(article.getStatusArticle() == EnumStatusArticle.PREPARE_PARTIE) {
+						Article newArticle = (Article) DaigouUtil.cloneObject(article);
+						newArticle.setIdArticle(null);
+						newArticle.setCount(newArticle.getCountArticleAchete());
+						newArticle.setStatusArticle(EnumStatusArticle.PREPARE_TOUT);
+						
+						int newCount = article.getCount() - article.getCountArticleAchete();
+						for(Article ar : commande.getArticles()) {
+							if(ar.getIdArticle() == article.getIdArticle()) {
+								//modifier ancien article
+								ar.setCount(newCount);
+								ar.setCountArticleAchete(0);
+								ar.setStatusArticle(EnumStatusArticle.NON_PREPARE);
+								ar.setCommande(commande);
+								ar.setColis(null);
+							}
+						}
+						newCommande.getArticles().add(newArticle);
+					}else {
+						newCommande.getArticles().add(article);
+						//remove ancien article
+						it.remove();
+					}
 				}
 			} 
 			
-			this.commandeDao.save(commande);
-			newCommande = this.commandeDao.save(newCommande);
-			// update les articles de colis
-			colis.getArticles().addAll(newCommande.getArticles());
+			this.commandeDao.save(DaigouUtil.computeStatusCommande(commande));
+			this.commandeDao.save(newCommande);
 		}
 	}
 
-	private void updateStatusCommandeForFullSendCommande(List<Commande> fullSendCommandes) {
+	private void updateStatusCommandeForFullSendCommande(List<Commande> fullSendCommandes, Colis colis) {
 		for(Commande commande : fullSendCommandes) {
-			commande.setStatus(EnumStatusCommande.COMMANDE_SUR_LA_ROUTE);
-			this.commandeDao.save(commande);
+			boolean isHasArticlePreparePartie = false;
+			for(Article article : commande.getArticles()) {
+				if(article.getStatusArticle() == EnumStatusArticle.PREPARE_PARTIE) {
+					isHasArticlePreparePartie = true;
+				}
+			}
+			
+			if(isHasArticlePreparePartie) {
+				Commande newCommande = DaigouUtil.createNewObjectCommande(commande, colis.getUtilisateur(), EnumStatusCommande.COMMANDE_SUR_LA_ROUTE);
+
+				for (Iterator<Article> it = commande.getArticles().iterator(); it.hasNext();) {
+					Article article = it.next();
+					if(article.getStatusArticle() == EnumStatusArticle.PREPARE_PARTIE) {
+						Article newArticle = (Article) DaigouUtil.cloneObject(article);
+						newArticle.setIdArticle(null);
+						newArticle.setCount(newArticle.getCountArticleAchete());
+						newArticle.setStatusArticle(EnumStatusArticle.PREPARE_TOUT);
+						newArticle.setCommande(newCommande);
+						
+						int newCount = article.getCount() - article.getCountArticleAchete();
+						for(Article ar : commande.getArticles()) {
+							if(ar.getIdArticle() == article.getIdArticle()) {
+								//modifier ancien article
+								ar.setCount(newCount);
+								ar.setCountArticleAchete(0);
+								ar.setStatusArticle(EnumStatusArticle.NON_PREPARE);
+								ar.setCommande(commande);
+								ar.setColis(null);
+							}
+						}
+						newCommande.getArticles().add(newArticle);
+					}
+					if(article.getStatusArticle() == EnumStatusArticle.PREPARE_TOUT) {
+						Article newArticle = (Article) DaigouUtil.cloneObject(article);
+						newArticle.setCommande(newCommande);
+						newArticle.setIdArticle(null);
+						newCommande.getArticles().add(newArticle);
+						
+						article.setCommande(null);
+						article.setColis(null);
+						it.remove();
+					}
+				}
+				this.commandeDao.save(newCommande);
+				this.commandeDao.save(DaigouUtil.computeStatusCommande(commande));
+			}else {
+				commande.setStatus(EnumStatusCommande.COMMANDE_SUR_LA_ROUTE);
+				this.commandeDao.save(commande);
+			}
+			
 		}
 	}
 
@@ -143,7 +220,7 @@ public class ColisServiceImpl implements ColisService {
 			if(a.getColis() == null) {
 				isFullSend = false;
 			}
-			if(a.getColis() != null && a.getColis().getIdColis() != colis.getIdColis()) {
+			if(a.getColis() != null && a.getColis().getIdColis().longValue() != colis.getIdColis().longValue()) {
 				isFullSend = false;
 			}
 		}

@@ -2,6 +2,7 @@ package xiaolan.daigou.domain.entity;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -55,18 +56,6 @@ public class Commande implements Serializable{
 	@JsonIgnoreProperties(value  = {"commande"}, allowSetters = true)
 	private Set<Article> articles = new HashSet<Article>();
     
-	@Column(name="date_creation")
-    private Date dateCreation;
-    
-	@Column(name="date_envoie")
-    private Date dateEnvoie;
-    
-	@Column(name="date_distribution")
-    private Date dateDistribution;
-    
-	@Column(name="date_termine")
-    private Date dateTermine;
-    
 	@Column(name="status")
 	@Convert(converter = StatusCommandeConverter.class)
 	private EnumStatusCommande status;
@@ -106,38 +95,6 @@ public class Commande implements Serializable{
 	public void setArticles(Set<Article> articles) {
 		this.articles = articles;
 	}
-
-	public Date getDateCreation() {
-		return dateCreation;
-	}
-
-	public void setDateCreation(Date dateCreation) {
-		this.dateCreation = dateCreation;
-	}
-
-	public Date getDateEnvoie() {
-		return dateEnvoie;
-	}
-
-	public void setDateEnvoie(Date dateEnvoie) {
-		this.dateEnvoie = dateEnvoie;
-	}
-
-	public Date getDateDistribution() {
-		return dateDistribution;
-	}
-
-	public void setDateDistribution(Date dateDistribution) {
-		this.dateDistribution = dateDistribution;
-	}
-
-	public Date getDateTermine() {
-		return dateTermine;
-	}
-
-	public void setDateTermine(Date dateTermine) {
-		this.dateTermine = dateTermine;
-	}
 	
     public EnumStatusCommande getStatus() {
 		return status;
@@ -173,5 +130,22 @@ public class Commande implements Serializable{
         
         Commande commande = (Commande) o;
         return Objects.equals(id, commande.getId());
+    }
+    
+    public void addArticle(Article article) {
+    	articles.add(article);
+    	article.setCommande(this);
+    }
+    
+    public void removeArticle(Article article) {
+		for (Iterator<Article> it = articles.iterator(); it.hasNext();) {
+			Article a = it.next();
+			
+			if(a.getIdArticle().longValue() == article.getIdArticle().longValue()) {
+    			a.setCommande(null);
+    			a.setColis(null);
+    			it.remove();
+			}
+		}
     }
 }

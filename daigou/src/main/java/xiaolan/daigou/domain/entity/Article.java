@@ -1,6 +1,7 @@
 package xiaolan.daigou.domain.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,18 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlTransient;
 
-import org.springframework.lang.Nullable;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import xiaolan.daigou.common.converter.StatusArticleConverter;
 import xiaolan.daigou.common.enums.EnumStatusArticle;
@@ -80,6 +71,21 @@ public class Article implements Serializable{
 	@JoinColumn(name = "commande_id")
 	@JsonIgnoreProperties("articles")
 	private Commande commande;
+	
+	@Column(name="date_creation")
+    private Date dateCreation;
+    
+	@Column(name="date_envoie")
+    private Date dateEnvoie;
+    
+	@Column(name="date_arrive")
+    private Date dateArrive;
+	
+	@Column(name="date_distribution")
+    private Date dateDistribution;
+    
+	@Column(name="date_termine")
+    private Date dateTermine;
 	
     public Article() {
 
@@ -171,5 +177,45 @@ public class Article implements Serializable{
 
 	public void setCommande(Commande commande) {
 		this.commande = commande;
+	}
+	
+	public Date getDateCreation() {
+		return dateCreation;
+	}
+
+	public void setDateCreation(Date dateCreation) {
+		this.dateCreation = dateCreation;
+	}
+
+	public Date getDateEnvoie() {
+		return dateEnvoie;
+	}
+
+	public void setDateEnvoie(Date dateEnvoie) {
+		this.dateEnvoie = dateEnvoie;
+	}
+
+	public Date getDateArrive() {
+		return dateArrive;
+	}
+
+	public void setDateArrive(Date dateArrive) {
+		this.dateArrive = dateArrive;
+	}
+
+	public Date getDateDistribution() {
+		return dateDistribution;
+	}
+
+	public void setDateDistribution(Date dateDistribution) {
+		this.dateDistribution = dateDistribution;
+	}
+
+	public Date getDateTermine() {
+		return dateTermine;
+	}
+
+	public void setDateTermine(Date dateTermine) {
+		this.dateTermine = dateTermine;
 	}
 }
