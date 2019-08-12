@@ -1,9 +1,7 @@
 package xiaolan.daigou.domain.entity;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -11,7 +9,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,17 +19,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-import xiaolan.daigou.common.converter.StatusArticleConverter;
 import xiaolan.daigou.common.converter.StatusCommandeConverter;
+import xiaolan.daigou.common.converter.TypeCommandeConverter;
 import xiaolan.daigou.common.enums.EnumStatusCommande;
+import xiaolan.daigou.common.enums.EnumTypeCommande;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 @Entity
 @Table(name="commande")
@@ -52,8 +46,8 @@ public class Commande implements Serializable{
     private Client client;
     
 	@OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	@OrderBy
 	@JsonIgnoreProperties(value  = {"commande"}, allowSetters = true)
+	@OrderBy("idArticle asc")
 	private Set<Article> articles = new HashSet<Article>();
     
 	@Column(name="status")
@@ -61,7 +55,8 @@ public class Commande implements Serializable{
 	private EnumStatusCommande status;
     
 	@Column(name="type_commande")
-    private int typeCommande;
+	@Convert(converter = TypeCommandeConverter.class)
+    private EnumTypeCommande typeCommande;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "utilisateur_id", nullable=false)
@@ -104,11 +99,13 @@ public class Commande implements Serializable{
 		this.status = status;
 	}
 
-	public void setTypeCommande(int typeCommande){
-        this.typeCommande = typeCommande;
-    }
+	public EnumTypeCommande getTypeCommande() {
+		return typeCommande;
+	}
 
-    public int getTypeCommande(){ return this.typeCommande; }
+	public void setTypeCommande(EnumTypeCommande typeCommande) {
+		this.typeCommande = typeCommande;
+	}
 
 	public Utilisateur getUtilisateur() {
 		return utilisateur;
@@ -117,7 +114,6 @@ public class Commande implements Serializable{
 	public void setUtilisateur(Utilisateur utilisateur) {
 		this.utilisateur = utilisateur;
 	}
-	
 
     @Override
     public boolean equals(Object o) {

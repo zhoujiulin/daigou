@@ -1,8 +1,16 @@
 package xiaolan.daigou.common.enums;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import xiaolan.daigou.common.serialize.StatusArticleDeserializer;
+import xiaolan.daigou.common.serialize.TypeCommandeDeserializer;
+
+@JsonDeserialize(using = TypeCommandeDeserializer.class)
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum EnumTypeCommande {
     COMMANDE_CLIENT(1, "Commande pour client"),
-    COMMANDE_SANS_CLIENT(2, "Commande sans client");
+    COMMANDE_STOCKAGE(2, "Commande pour stockage");
 
 
     private int index;
@@ -27,4 +35,13 @@ public enum EnumTypeCommande {
 	public void setLibelle(String libelle) {
 		this.libelle = libelle;
 	}
+	
+    public static EnumTypeCommande getEnumByIndex(int index) {
+        for(EnumTypeCommande status : values()) {
+            if(status.getIndex() == index) {
+                return status;
+            }
+        }
+        return null;
+    }
 }

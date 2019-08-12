@@ -46,7 +46,7 @@ public class CommandeServiceImpl implements CommandeService{
 	public Commande createNewCommande(Commande commande, Long userId) {
 		Utilisateur utilisateur = utilisateurDao.findById(userId);
 		
-		if(commande.getTypeCommande() == EnumTypeCommande.COMMANDE_SANS_CLIENT.getIndex()) {
+		if(commande.getTypeCommande() == EnumTypeCommande.COMMANDE_STOCKAGE) {
 			commande.setClient(null);
 		}else {
 			Client client = clientDao.findClientByName(commande.getClient(), userId);
@@ -59,7 +59,7 @@ public class CommandeServiceImpl implements CommandeService{
 		
 		commande.setStatus(EnumStatusCommande.NEW_COMMANDE);
 		commande.setUtilisateur(utilisateur);
-		commande.setTypeCommande(EnumTypeCommande.COMMANDE_CLIENT.getIndex());
+		commande.setTypeCommande(EnumTypeCommande.COMMANDE_CLIENT);
 		
 		for(Article a : commande.getArticles()) {
 			a.setCommande(commande);

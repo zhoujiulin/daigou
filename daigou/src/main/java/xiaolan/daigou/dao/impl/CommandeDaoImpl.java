@@ -34,6 +34,7 @@ public class CommandeDaoImpl extends BaseDaoImpl<Commande> implements CommandeDa
 			}
         }
         queryBuilder.append(") ");
+        queryBuilder.append(" ORDER BY c.id ASC");
         
 //      queryBuilder.append(" from Commande as c where c.utilisateur.idUser = ? and c.status in ");
 //      queryBuilder.append("(");    

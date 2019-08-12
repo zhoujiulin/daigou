@@ -8,10 +8,10 @@ import xiaolan.daigou.common.serialize.StatusColisDeserializer;
 @JsonDeserialize(using = StatusColisDeserializer.class)
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum EnumStatusColis {
-	COLIS_NON_ENVOYE(1, "Colis non envoyé"),
-    COLIS_ENVOYE_VERS_CHINE(2, "Colis envoyé vers Chine"),
-    COLIS_ARRIVE_EN_CHINE(3, "Colis arrivé en Chine"),
-    COLIS_TERMINE(4, "Colis terminé");
+	COLIS_NON_ENVOYE(1, "enum.colis.colisNonEnvoye"),
+    COLIS_ENVOYE_VERS_CHINE(2, "enum.colis.colisEnvoyeVersChine"),
+    COLIS_ARRIVE_EN_CHINE(3, "enum.colis.colisArriveEnChine"),
+    COLIS_TERMINE(4, "enum.colis.colisTermine");
     
 	private int index;
     private String value;

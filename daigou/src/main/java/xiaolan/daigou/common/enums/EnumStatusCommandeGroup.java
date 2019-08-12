@@ -11,10 +11,10 @@ import xiaolan.daigou.common.serialize.StatusCommandeGroupDeserializer;
 @JsonDeserialize(using = StatusCommandeGroupDeserializer.class)
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum EnumStatusCommandeGroup {
-	COMMANDE_NON_ENVOYEE("Commande non envoyé"),
-    COMMANDE_ENVOYEE("Commande envoyée sur la route"),
-    COMMANDE_ARRIVEE("Commande arrivé"),
-    COMMANDE_TERMINEE("Commande terminé");
+	COMMANDE_NON_ENVOYEE("enum.commandeGroup.commandeNonEnvoyee"),
+    COMMANDE_ENVOYEE("enum.commandeGroup.commandeEnvoyeeSurLaRoute"),
+    COMMANDE_ARRIVEE("enum.commandeGroup.commandeArrivee"),
+    COMMANDE_TERMINEE("enum.commandeGroup.commandeTerminee");
     
     private String value;
     
