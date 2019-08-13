@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import xiaolan.daigou.common.enums.EnumStatusArticle;
 import xiaolan.daigou.common.enums.EnumStatusCommande;
 import xiaolan.daigou.common.enums.EnumStatusCommandeGroup;
+import xiaolan.daigou.common.enums.EnumTypeArticle;
 import xiaolan.daigou.common.enums.EnumTypeCommande;
 import xiaolan.daigou.common.utils.DaigouUtil;
+import xiaolan.daigou.dao.BaseDao;
 import xiaolan.daigou.dao.ClientDao;
 import xiaolan.daigou.dao.ColisDao;
 import xiaolan.daigou.dao.CommandeDao;
@@ -28,7 +30,7 @@ import xiaolan.daigou.domain.entity.Utilisateur;
 import xiaolan.daigou.service.CommandeService;
 
 @Service
-public class CommandeServiceImpl implements CommandeService{
+public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implements CommandeService{
 
 	@Autowired
 	private CommandeDao commandeDao;
@@ -42,6 +44,10 @@ public class CommandeServiceImpl implements CommandeService{
 	@Autowired
 	private ColisDao colisDao;
 
+    public CommandeServiceImpl() {
+        super(Commande.class);
+    }
+	
 	@Override
 	public Commande createNewCommande(Commande commande, Long userId) {
 		Utilisateur utilisateur = utilisateurDao.findById(userId);
@@ -64,17 +70,12 @@ public class CommandeServiceImpl implements CommandeService{
 		for(Article a : commande.getArticles()) {
 			a.setCommande(commande);
 			a.setStatusArticle(computeStatusArticle(a));
+			a.setTypeArticle(EnumTypeArticle.ARTICLE_CLIENT);
 			a.setDateCreation(new Date());
 		}
 		
 		Commande c= this.commandeDao.save(commande);
 		return c;
-	}
-
-	@Override
-	public Commande findCommandeById(Long id) {
-
-		return this.commandeDao.findById(id);
 	}
 
 	@Override
@@ -172,7 +173,7 @@ public class CommandeServiceImpl implements CommandeService{
 	}
 
 	@Override
-	public void deleteCommandeById(long idCommande) {
-		this.commandeDao.deleteById(idCommande);
+	public BaseDao<Commande> getDao() {
+		return this.commandeDao;
 	}
 }

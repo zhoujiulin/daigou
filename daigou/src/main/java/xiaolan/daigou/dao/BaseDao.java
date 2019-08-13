@@ -19,5 +19,5 @@ public interface BaseDao<T> {
 	
 	List<T> getAll();
 	
-	List<T> getAll(long userId);
+	List<T> getAll(Long userId);
 }

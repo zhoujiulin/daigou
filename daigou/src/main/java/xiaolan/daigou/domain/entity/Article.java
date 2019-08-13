@@ -7,8 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,7 +18,9 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import xiaolan.daigou.common.converter.StatusArticleConverter;
+import xiaolan.daigou.common.converter.TypeArticleConverter;
 import xiaolan.daigou.common.enums.EnumStatusArticle;
+import xiaolan.daigou.common.enums.EnumTypeArticle;
 
 @Entity
 @Table(name="article")
@@ -61,6 +61,10 @@ public class Article implements Serializable{
 	//@Enumerated(EnumType.STRING)
 	@Convert(converter = StatusArticleConverter.class)
 	private EnumStatusArticle statusArticle;
+	
+	@Column(name="type_article")
+	@Convert(converter = TypeArticleConverter.class)
+	private EnumTypeArticle typeArticle;
 	
 	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
 	@JoinColumn(name = "colis_id")
@@ -157,6 +161,14 @@ public class Article implements Serializable{
     
 	public EnumStatusArticle getStatusArticle() {
 		return statusArticle;
+	}
+
+	public EnumTypeArticle getTypeArticle() {
+		return typeArticle;
+	}
+
+	public void setTypeArticle(EnumTypeArticle typeArticle) {
+		this.typeArticle = typeArticle;
 	}
 
 	public void setStatusArticle(EnumStatusArticle statusArticle) {

@@ -85,7 +85,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	}
 
 	@Override
-	public List<T> getAll(long userId) {
+	public List<T> getAll(Long userId) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append(FROM);
         queryBuilder.append(this.clazz.getSimpleName());

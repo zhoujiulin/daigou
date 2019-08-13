@@ -28,13 +28,6 @@ public class PreLoginController {
 	public ResponseEntity<Response> registration(@RequestBody Utilisateur user){
 		Utilisateur dbUser = userService.inscription(user);
 		
-		Commande commandePourStockage = new Commande();
-		commandePourStockage.setId(0L);
-		commandePourStockage.setTypeCommande(EnumTypeCommande.COMMANDE_STOCKAGE);
-		commandePourStockage.setStatus(EnumStatusCommande.NEW_COMMANDE);
-		commandePourStockage.setUtilisateur(dbUser);
-		this.commandeService.saveCommande(commandePourStockage);
-		
 		if(dbUser != null) {
 			return new ResponseEntity<Response>(new Response("User is saved succesfully"), HttpStatus.OK);
 		}

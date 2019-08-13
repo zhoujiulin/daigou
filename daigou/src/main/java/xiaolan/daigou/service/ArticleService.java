@@ -2,11 +2,6 @@ package xiaolan.daigou.service;
 
 import xiaolan.daigou.domain.entity.Article;
 
-public interface ArticleService {
+public interface ArticleService extends AbstractService<Article>{
 	
-	Article createArticle(Article article);
-	
-	Article updateArticle(Article article);
-	
-	Article findArticleById(Long id);
 }

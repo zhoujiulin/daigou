@@ -1,11 +1,10 @@
 package xiaolan.daigou.service;
 
 import java.util.List;
-import java.util.Map;
 
 import xiaolan.daigou.domain.entity.Colis;
 
-public interface ColisService {
+public interface ColisService extends AbstractService<Colis> {
 
 	Colis createColis(Colis colis, Long idUser);
 	

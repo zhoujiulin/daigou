@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import xiaolan.daigou.dao.BaseDao;
 import xiaolan.daigou.dao.StockageDao;
 import xiaolan.daigou.dao.UtilisateurDao;
 import xiaolan.daigou.domain.entity.ArticleStockage;
@@ -12,13 +13,17 @@ import xiaolan.daigou.domain.entity.Utilisateur;
 import xiaolan.daigou.service.StockageService;
 
 @Service
-public class StockageServiceImpl implements StockageService {
+public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> implements StockageService {
 
 	@Autowired
 	private StockageDao stockageDao;
 	
 	@Autowired
 	private UtilisateurDao utilisateurDao;
+	
+    public StockageServiceImpl() {
+        super(ArticleStockage.class);
+    }
 	
 	@Override
 	public List<ArticleStockage> getAllStockage(long userId){
@@ -50,7 +55,7 @@ public class StockageServiceImpl implements StockageService {
 	}
 
 	@Override
-	public ArticleStockage findById(Long id) {
-		return this.stockageDao.findById(id);
+	public BaseDao<ArticleStockage> getDao() {
+		return this.stockageDao;
 	}
 }

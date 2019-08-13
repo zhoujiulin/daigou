@@ -48,7 +48,7 @@ public class CommandeController {
 	@GetMapping(value="/commande/{id}")
 	public Commande getCommandeById(@PathVariable("id") Long id) {
 		
-		return this.commandeService.findCommandeById(id);
+		return this.commandeService.findById(id);
 	}
 	
 	@GetMapping(value="/status")
@@ -89,6 +89,6 @@ public class CommandeController {
 	@DeleteMapping(value="/deletecommande")
 	public void deleteCommande(@RequestParam(value = "idCommande") String idCommande) {
 	
-		this.commandeService.deleteCommandeById(Long.valueOf(idCommande));
+		this.commandeService.deleteById(Long.valueOf(idCommande));
 	}
 }

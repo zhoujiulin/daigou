@@ -5,13 +5,12 @@ import java.util.Map;
 
 import xiaolan.daigou.common.enums.EnumStatusArticle;
 import xiaolan.daigou.common.enums.EnumTypeCommande;
+import xiaolan.daigou.domain.entity.Colis;
 import xiaolan.daigou.domain.entity.Commande;
 
-public interface CommandeService {
+public interface CommandeService extends AbstractService<Commande> {
 
 	Commande createNewCommande(Commande commande, Long userId);
-	
-	Commande findCommandeById(Long id);
 	
 	List<Commande> getCommandesByStatus(List<String> statusList, Long userId);
 
@@ -20,6 +19,4 @@ public interface CommandeService {
 	Map<String, String> getCommandeStatusGroup();
 	
 	Commande saveCommande(Commande commande);
-	
-	void deleteCommandeById(long idCommande);
 }

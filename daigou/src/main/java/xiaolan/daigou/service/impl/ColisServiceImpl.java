@@ -3,10 +3,8 @@ package xiaolan.daigou.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,8 +12,8 @@ import org.springframework.stereotype.Service;
 import xiaolan.daigou.common.enums.EnumStatusArticle;
 import xiaolan.daigou.common.enums.EnumStatusColis;
 import xiaolan.daigou.common.enums.EnumStatusCommande;
-import xiaolan.daigou.common.enums.EnumStatusCommandeGroup;
 import xiaolan.daigou.common.utils.DaigouUtil;
+import xiaolan.daigou.dao.BaseDao;
 import xiaolan.daigou.dao.ColisDao;
 import xiaolan.daigou.dao.CommandeDao;
 import xiaolan.daigou.dao.UtilisateurDao;
@@ -26,7 +24,7 @@ import xiaolan.daigou.domain.entity.Utilisateur;
 import xiaolan.daigou.service.ColisService;
 
 @Service
-public class ColisServiceImpl implements ColisService {
+public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements ColisService {
 
 	@Autowired
 	private ColisDao colisDao;
@@ -36,7 +34,11 @@ public class ColisServiceImpl implements ColisService {
 	
 	@Autowired
 	private CommandeDao commandeDao;
-
+	
+    public ColisServiceImpl() {
+        super(Colis.class);
+    }
+	
 	@Override
 	public Colis createColis(Colis colis, Long idUser) {
 		Utilisateur utilisateur = utilisateurDao.findById(idUser);
@@ -226,5 +228,10 @@ public class ColisServiceImpl implements ColisService {
 		}
 		
 		return isFullSend;
+	}
+
+	@Override
+	public BaseDao<Colis> getDao() {
+		return this.colisDao;
 	}
 }

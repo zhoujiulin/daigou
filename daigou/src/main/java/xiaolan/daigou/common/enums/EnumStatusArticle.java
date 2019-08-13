@@ -7,10 +7,11 @@ import  xiaolan.daigou.common.serialize.StatusArticleDeserializer;
 @JsonDeserialize(using = StatusArticleDeserializer.class)
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum EnumStatusArticle{
-    NON_PREPARE(1, "enum.article.nonPrepare", DaigouConstant.CSS_RED),
-    PREPARE_PARTIE(2, "enum.article.prepareUnePartie", DaigouConstant.CSS_ORANGE),
-    PREPARE_TOUT(3, "enum.article.toutPrepare", DaigouConstant.CSS_VERT),
-    QTE_INCORRECT(4, "enum.article.nombreIncorrect", DaigouConstant.CSS_RED);
+    NON_PREPARE(1, "enum.article.status.nonPrepare", DaigouConstant.CSS_RED),
+    PREPARE_PARTIE(2, "enum.article.status.prepareUnePartie", DaigouConstant.CSS_ORANGE),
+    PREPARE_TOUT(3, "enum.article.status.toutPrepare", DaigouConstant.CSS_VERT),
+    STOCKAGE(4, "enum.article.status.stockage", DaigouConstant.CSS_VERT),
+    QTE_INCORRECT(5, "enum.article.status.nombreIncorrect", DaigouConstant.CSS_RED);
 
     private int index;
     private String value;
