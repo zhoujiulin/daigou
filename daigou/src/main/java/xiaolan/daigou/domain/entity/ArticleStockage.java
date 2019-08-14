@@ -36,9 +36,12 @@ public class ArticleStockage implements Serializable{
 	@Column(name="count_stockage_chine")
     private int countStockageChine;
     
-	@Column(name="count_stokcage_france")
-    private int countStockageFrance;
+	@Column(name="count_stokcage_france_available")
+    private int countStockageFranceAvailable;
     
+	@Column(name="count_stokcage_france_colis")
+    private int countStockageFranceColis;
+	
 	@Column(name="count_stokcage_en_route")
     private int countStockageEnRoute;
 	
@@ -76,15 +79,23 @@ public class ArticleStockage implements Serializable{
         return this.countStockageChine;
     }
 
-    public void setCountStockageFrance(int countStockageFrance){
-        this.countStockageFrance = countStockageFrance;
-    }
+    public int getCountStockageFranceAvailable() {
+		return countStockageFranceAvailable;
+	}
 
-    public int getCountStockageFrance(){
-        return this.countStockageFrance;
-    }
+	public void setCountStockageFranceAvailable(int countStockageFranceAvailable) {
+		this.countStockageFranceAvailable = countStockageFranceAvailable;
+	}
 
-    public void setCountStockageEnRoute(int countStockageEnRoute){
+	public int getCountStockageFranceColis() {
+		return countStockageFranceColis;
+	}
+
+	public void setCountStockageFranceColis(int countStockageFranceColis) {
+		this.countStockageFranceColis = countStockageFranceColis;
+	}
+
+	public void setCountStockageEnRoute(int countStockageEnRoute){
         this.countStockageEnRoute = countStockageEnRoute;
     }
 

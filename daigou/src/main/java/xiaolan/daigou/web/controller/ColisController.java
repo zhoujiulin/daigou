@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,13 +38,15 @@ public class ColisController {
 	@Autowired
 	private ArticleService articleService;
 	
-	@PostMapping(value="/create")
+	@Autowired
+	private StockageService stockageService;
+	
+	@PostMapping(value="/createcolis")
 	@ResponseBody
 	public Colis createColis(@RequestBody Colis colis, Authentication authentication) {
-		
 		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
 		
-		return this.colisService.createColis(colis, jwtUser.getId());
+		return this.colisService.createColis(jwtUser.getId());
 	}
 	
 	@GetMapping(value="/getcolisstatus")
@@ -78,17 +81,7 @@ public class ColisController {
 			@RequestParam(value = "countArticleStockage") int countArticleStockage, Authentication authentication) {
 		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
 		
-		Colis colis = this.colisService.findById(Long.valueOf(idColis));
-		
-		Article article = new Article();
-		article.setNameArticle(articleStockage.getNameArticleStockage());
-		article.setTypeArticle(EnumTypeArticle.ARTICLE_STOCKAGE);
-		article.setStatusArticle(EnumStatusArticle.STOCKAGE);
-		article.setDateCreation(new Date());
-		article.setCountArticleFromStockageFrance(countArticleStockage);
-		article.setColis(colis);
-		
-		return articleService.save(article);
+		return this.colisService.putArticleStockageInColis(articleStockage, idColis, countArticleStockage);
 	}
 	
 	@PostMapping(value="/deletearticlefromcolis")
@@ -96,6 +89,17 @@ public class ColisController {
 	public void deleteArticleFromColis(@RequestBody Article article, Authentication authentication) {
 		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
 		
+		ArticleStockage articleStockage = stockageService.findByNameArticleStockage(article.getNameArticle(), jwtUser.getId());
+		articleStockage.setCountStockageFranceAvailable(articleStockage.getCountStockageFranceAvailable() + article.getCount());
+		articleStockage.setCountStockageFranceColis(articleStockage.getCountStockageFranceColis() - article.getCount());
+		stockageService.save(articleStockage);
+		
 		articleService.deleteById(article.getIdArticle());
+	}
+	
+	@DeleteMapping(value="/deletecolis/{id}")
+	public void deleteCommande(@PathVariable("id") Long id) {
+	
+		this.colisService.deleteById(id);
 	}
 }

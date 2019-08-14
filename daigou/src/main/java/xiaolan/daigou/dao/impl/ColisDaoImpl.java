@@ -32,4 +32,17 @@ public class ColisDaoImpl extends BaseDaoImpl<Colis> implements ColisDao {
 		return query.getResultList();
 	}
 
+	@Override
+	public Colis getLastColis(Long idUser) {
+		Colis last = null;
+		try {
+			Query query = em.createQuery("from Colis as c where c.utilisateur.idUser = ? order by c.idColis DESC");
+			query.setParameter(0, idUser);
+			query.setMaxResults(1);
+			last = (Colis) query.getSingleResult();
+		} catch (Exception e) {
+			last = null;
+		}	
+		return last;
+	}
 }

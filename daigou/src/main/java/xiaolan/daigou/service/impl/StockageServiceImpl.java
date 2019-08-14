@@ -40,7 +40,8 @@ public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> im
 		if(as != null) {
 			as.setCountStockageChine(as.getCountStockageChine() + articleStockage.getCountStockageChine());
 			as.setCountStockageEnRoute(as.getCountStockageEnRoute() + articleStockage.getCountStockageEnRoute());
-			as.setCountStockageFrance(as.getCountStockageFrance() + articleStockage.getCountStockageFrance());
+			as.setCountStockageFranceAvailable(as.getCountStockageFranceAvailable() + articleStockage.getCountStockageFranceAvailable());
+			as.setCountStockageFranceColis(as.getCountStockageFranceColis() + articleStockage.getCountStockageFranceColis());
 
 			return this.stockageDao.save(as);
 		}else {
@@ -57,5 +58,10 @@ public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> im
 	@Override
 	public BaseDao<ArticleStockage> getDao() {
 		return this.stockageDao;
+	}
+
+	@Override
+	public ArticleStockage findByNameArticleStockage(String nameArticleStockage, long idUser) {
+		return this.stockageDao.findByNameArticleStockage(nameArticleStockage, idUser);
 	}
 }

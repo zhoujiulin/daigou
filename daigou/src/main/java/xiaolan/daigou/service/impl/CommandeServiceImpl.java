@@ -69,7 +69,7 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
 		
 		for(Article a : commande.getArticles()) {
 			a.setCommande(commande);
-			a.setStatusArticle(computeStatusArticle(a));
+			a.setStatusArticle(DaigouUtil.computeStatusArticle(a));
 			a.setTypeArticle(EnumTypeArticle.ARTICLE_CLIENT);
 			a.setDateCreation(new Date());
 		}
@@ -146,30 +146,15 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
 		Set<Article> articleList = new HashSet<Article>();
 		
 		for(Article article : articles) {
-			article.setStatusArticle(computeStatusArticle(article));
+			if(article.getTypeArticle() == null) {
+				article.setTypeArticle(EnumTypeArticle.ARTICLE_CLIENT);
+			}
+			
+			article.setStatusArticle(DaigouUtil.computeStatusArticle(article));
 			articleList.add(article);
 		}
 		
 		return articleList;
-	}
-	
-	private EnumStatusArticle computeStatusArticle(Article article){
-		int count = article.getCount();
-		int countAchete = article.getCountArticleAchete();
-		int countFromStockageEnFrance = article.getCountArticleFromStockageFrance();
-		int countFromStockageEnChine = article.getCountArticleFromStockageChine();
-		int countFromStockageEnRoute = article.getCountArticleFromStockageEnRoute();
-		
-		int countPrepare = countAchete + countFromStockageEnFrance + countFromStockageEnChine + countFromStockageEnRoute;
-		if(count == countPrepare) {
-			return EnumStatusArticle.PREPARE_TOUT;
-		}else if(count < countPrepare) {
-			return EnumStatusArticle.QTE_INCORRECT;
-		}else if(count > countPrepare && countPrepare != 0) {
-			return EnumStatusArticle.PREPARE_PARTIE;
-		}else {
-			return EnumStatusArticle.NON_PREPARE;
-		}
 	}
 
 	@Override

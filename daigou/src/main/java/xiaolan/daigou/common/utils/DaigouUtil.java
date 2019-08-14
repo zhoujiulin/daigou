@@ -113,6 +113,25 @@ public class DaigouUtil {
 		return commande;
 	}
 	
+	public static EnumStatusArticle computeStatusArticle(Article article){
+		int count = article.getCount();
+		int countAchete = article.getCountArticleAchete();
+		int countFromStockageEnFrance = article.getCountArticleFromStockageFrance();
+		int countFromStockageEnChine = article.getCountArticleFromStockageChine();
+		int countFromStockageEnRoute = article.getCountArticleFromStockageEnRoute();
+		
+		int countPrepare = countAchete + countFromStockageEnFrance + countFromStockageEnChine + countFromStockageEnRoute;
+		if(count == countPrepare) {
+			return EnumStatusArticle.PREPARE_TOUT;
+		}else if(count < countPrepare) {
+			return EnumStatusArticle.QTE_INCORRECT;
+		}else if(count > countPrepare && countPrepare != 0) {
+			return EnumStatusArticle.PREPARE_PARTIE;
+		}else {
+			return EnumStatusArticle.NON_PREPARE;
+		}
+	}
+	
 	public static Commande createNewObjectCommande(Commande commande, Utilisateur utilisateur, EnumStatusCommande status) {
 		Commande newCommande = new Commande();
 		newCommande.setClient(commande.getClient());

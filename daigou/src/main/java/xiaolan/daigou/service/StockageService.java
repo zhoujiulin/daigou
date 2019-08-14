@@ -11,4 +11,6 @@ public interface StockageService extends AbstractService<ArticleStockage> {
 	ArticleStockage createArticleStockage(ArticleStockage articleStockage, long userId);
 	
 	ArticleStockage saveArticleStokage(ArticleStockage articleStockage);
+
+	ArticleStockage findByNameArticleStockage(String nameArticleStockage, long idUser);
 }
