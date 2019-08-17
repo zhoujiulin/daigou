@@ -57,4 +57,12 @@ public class StockageController {
 		ArticleStockage result = this.stockageService.findById(Long.valueOf(id));
 		return result;
 	}
+	
+	@GetMapping(value="/getarticlestockagebyname/{name}")
+	public ArticleStockage findByNameArticleStockage(@PathVariable("name") String nameArticleStockage, Authentication authentication) {
+		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
+		
+		ArticleStockage result = this.stockageService.findByNameArticleStockage(nameArticleStockage, jwtUser.getId());
+		return result;
+	}
 }
