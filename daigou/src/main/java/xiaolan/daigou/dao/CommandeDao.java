@@ -12,5 +12,7 @@ import xiaolan.daigou.domain.entity.Commande;
 
 public interface CommandeDao extends BaseDao<Commande>{
 	
-	public List<Commande> getCommandesByStatus(List<String> statusList, Long userId);
+	List<Commande> getCommandesByStatus(List<String> statusList, Long userId);
+	
+	List<Commande> getCommandeByClient(Long idClient, Long idUser);
 }

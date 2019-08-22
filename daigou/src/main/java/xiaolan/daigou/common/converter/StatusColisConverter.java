@@ -3,7 +3,7 @@ package xiaolan.daigou.common.converter;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import xiaolan.daigou.common.enums.EnumStatusArticle;
+import xiaolan.daigou.common.enums.EnumStatusArticlePreparation;
 import xiaolan.daigou.common.enums.EnumStatusColis;
 
 @Converter

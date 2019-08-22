@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import xiaolan.daigou.dao.ClientDao;
 import xiaolan.daigou.domain.entity.Client;
-import xiaolan.daigou.domain.entity.Commande;
 
 @Repository
 @Transactional

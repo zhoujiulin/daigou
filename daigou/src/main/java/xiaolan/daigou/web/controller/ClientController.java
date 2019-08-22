@@ -1,16 +1,18 @@
 package xiaolan.daigou.web.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import xiaolan.daigou.domain.dto.ClientDTO;
 import xiaolan.daigou.domain.entity.Client;
 import xiaolan.daigou.service.ClientService;
+import xiaolan.daigou.web.security.jwt.JwtUser;
 
 
 @RestController
@@ -20,16 +22,17 @@ public class ClientController {
 	@Autowired
 	private ClientService clientService;
 	
-	@PostMapping(value="/create")
-	@ResponseBody
-	public Client createClient(@RequestBody Client client){
+	@GetMapping(value="/client/{id}")
+	public Client getClientById(@PathVariable("id") Long id, Authentication authentication) {
 		
-		return this.clientService.createClient(client);
+		return this.clientService.findById(id);
 	}
 	
-	@GetMapping(value="/client/{id}")
-	public Client getClientById(@PathVariable("id") Long id) {
+	@GetMapping(value="/getclienthascommandeencours")
+	public List<ClientDTO> getClientHasCommandeEnCours(Authentication authentication) {
+		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
 		
-		return this.clientService.findClientById(id);
+		List<ClientDTO> clientDTOs = this.clientService.getClientHasCommandeEnCours(jwtUser.getId());
+ 		return clientDTOs;
 	}
 }

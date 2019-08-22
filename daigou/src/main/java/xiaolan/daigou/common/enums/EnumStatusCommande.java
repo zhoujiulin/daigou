@@ -1,18 +1,14 @@
 package xiaolan.daigou.common.enums;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import xiaolan.daigou.common.serialize.StatusArticleDeserializer;
 import xiaolan.daigou.common.serialize.StatusCommandeDeserializer;
-import xiaolan.daigou.common.serialize.StatusCommandeGroupDeserializer;
 
 @JsonDeserialize(using = StatusCommandeDeserializer.class)
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum EnumStatusCommande {
+    ERREUR_IN_COMMANDE(0, "enum.commande.erreurInCommande", DaigouConstant.CSS_RED, EnumStatusCommandeGroup.COMMANDE_NON_ENVOYEE),
     NEW_COMMANDE(1, "enum.commande.nouvelleCommande", DaigouConstant.CSS_RED, EnumStatusCommandeGroup.COMMANDE_NON_ENVOYEE),
     COMMANDE_PARTIE_PRET(2, "enum.commande.partiePret", DaigouConstant.CSS_ORANGE, EnumStatusCommandeGroup.COMMANDE_NON_ENVOYEE),
     COMMANDE_PARTIE_PRET_A_ENVOYER(3, "enum.commande.partiePretAEnvoyer", DaigouConstant.CSS_ORANGE, EnumStatusCommandeGroup.COMMANDE_NON_ENVOYEE),

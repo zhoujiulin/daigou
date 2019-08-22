@@ -18,8 +18,10 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import xiaolan.daigou.common.converter.StatusArticleConverter;
+import xiaolan.daigou.common.converter.StatusArticlePreparationConverter;
 import xiaolan.daigou.common.converter.TypeArticleConverter;
 import xiaolan.daigou.common.enums.EnumStatusArticle;
+import xiaolan.daigou.common.enums.EnumStatusArticlePreparation;
 import xiaolan.daigou.common.enums.EnumTypeArticle;
 
 @Entity
@@ -57,8 +59,12 @@ public class Article implements Serializable{
 	@Column(name="count_article_from_stockage_chine")
     private int countArticleFromStockageChine;
     
-	@Column(name="status_article")
+	@Column(name="status_preparation")
 	//@Enumerated(EnumType.STRING)
+	@Convert(converter = StatusArticlePreparationConverter.class)
+	private EnumStatusArticlePreparation statusArticlePreparation;
+	
+	@Column(name="status_article")
 	@Convert(converter = StatusArticleConverter.class)
 	private EnumStatusArticle statusArticle;
 	
@@ -159,8 +165,20 @@ public class Article implements Serializable{
         return this.countArticleFromStockageChine;
     }
     
+	public EnumStatusArticlePreparation getStatusArticlePreparation() {
+		return statusArticlePreparation;
+	}
+
+	public void setStatusArticlePreparation(EnumStatusArticlePreparation statusArticlePreparation) {
+		this.statusArticlePreparation = statusArticlePreparation;
+	}
+	
 	public EnumStatusArticle getStatusArticle() {
 		return statusArticle;
+	}
+
+	public void setStatusArticle(EnumStatusArticle statusArticle) {
+		this.statusArticle = statusArticle;
 	}
 
 	public EnumTypeArticle getTypeArticle() {
@@ -171,10 +189,6 @@ public class Article implements Serializable{
 		this.typeArticle = typeArticle;
 	}
 
-	public void setStatusArticle(EnumStatusArticle statusArticle) {
-		this.statusArticle = statusArticle;
-	}
-    
 	public Colis getColis() {
 		return colis;
 	}

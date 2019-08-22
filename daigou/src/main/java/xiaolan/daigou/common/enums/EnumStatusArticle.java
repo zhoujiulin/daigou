@@ -2,35 +2,48 @@ package xiaolan.daigou.common.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import  xiaolan.daigou.common.serialize.StatusArticleDeserializer;
+
+import xiaolan.daigou.common.serialize.StatusArticleDeserializer;
 
 @JsonDeserialize(using = StatusArticleDeserializer.class)
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum EnumStatusArticle{
-    NON_PREPARE(1, "enum.article.status.nonPrepare", DaigouConstant.CSS_RED),
-    PREPARE_PARTIE(2, "enum.article.status.prepareUnePartie", DaigouConstant.CSS_ORANGE),
-    PREPARE_TOUT(3, "enum.article.status.toutPrepare", DaigouConstant.CSS_VERT),
-    STOCKAGE(4, "enum.article.status.stockage", DaigouConstant.CSS_VERT),
-    QTE_INCORRECT(5, "enum.article.status.nombreIncorrect", DaigouConstant.CSS_RED);
-
-    private int index;
+public enum EnumStatusArticle {
+	ARTICLE_NON_ENVOYE(1, "enum.article.status.articleNonEnvoye", DaigouConstant.CSS_RED),
+	ARTICLE_ENVOYE_SUR_LA_ROUTE(2, "enum.article.status.articleEnvoyeSurLaRoute", DaigouConstant.CSS_VERT),
+	ARTICLE_ARRIVE_EN_CHINE_MANQUE_INFO_CLIENT(3, "enum.article.status.articleArriveEnChine.manqueInfoClient", DaigouConstant.CSS_VERT),
+	ARTICLE_ARRIVE_EN_CHINE_PRET_A_DISTRIBUER(4, "enum.article.status.articleArriveEnChine.pretADistribuer", DaigouConstant.CSS_VERT),
+	ARTICLE_TERMINE(5, "enum.article.status.articleTermine", DaigouConstant.CSS_VERT);
+    
+	private int index;
     private String value;
     private String color;
-
-    private EnumStatusArticle(Integer index, String value, String color){
-        this.index = index;
-        this.value = value;
-        this.color = color;
+    
+    private EnumStatusArticle(int index, String value, String color) {
+    	this.index = index;
+    	this.value = value;
+    	this.color = color;
     }
-
-    public static String getValueByIndex(int index) {
-        String value = null;
-        for(EnumStatusArticle status : values()) {
-            if(status.getIndex() == index) {
-                value = status.getValue();
+    
+    public int getIndex() {
+    	return this.index;
+    }
+    
+    public String getValue() {
+    	return this.value;
+    }
+    
+    public String getColor() {
+    	return this.color;
+    }
+    
+    public static EnumStatusArticle getValueByIndex(int index) {
+    	EnumStatusArticle status = null;
+        for(EnumStatusArticle s : values()) {
+            if(s.getIndex() == index) {
+                status = s;
             }
         }
-        return value;
+		return status;
     }
     
     public static EnumStatusArticle getEnumByIndex(int index) {
@@ -40,23 +53,5 @@ public enum EnumStatusArticle{
             }
         }
         return null;
-    }
-
-    public void setIndex(int index){
-        this.index = index;
-    }
-    public Integer getIndex(){
-        return this.index;
-    }
-
-    public void setValue(String value){
-        this.value = value;
-    }
-    public String getValue(){
-        return this.value;
-    }
-    
-    public String getColor(){
-    	return this.color;
     }
 }

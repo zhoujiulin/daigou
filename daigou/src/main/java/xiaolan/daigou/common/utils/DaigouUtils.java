@@ -7,12 +7,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import xiaolan.daigou.common.enums.EnumStatusArticle;
+import xiaolan.daigou.common.enums.EnumStatusArticlePreparation;
 import xiaolan.daigou.common.enums.EnumStatusCommande;
 import xiaolan.daigou.domain.entity.Article;
 import xiaolan.daigou.domain.entity.Commande;
 import xiaolan.daigou.domain.entity.Utilisateur;
 
-public class DaigouUtil {
+public class DaigouUtils {
 
 	public static EnumStatusCommande isCommandeArriveePretADistribuer(Commande commande) {
 		String nameWechat = commande.getClient().getNameWechat();
@@ -63,25 +64,53 @@ public class DaigouUtil {
 		
 		return objDes;
 	}
+	public static Commande computeStatusArticle(Commande commande) {
+		for(Article article : commande.getArticles()) {
+			if(commande.getStatus() == EnumStatusCommande.ERREUR_IN_COMMANDE ||commande.getStatus() == EnumStatusCommande.COMMANDE_PRET_A_ENVOYER
+					|| commande.getStatus() == EnumStatusCommande.COMMANDE_PARTIE_PRET || commande.getStatus() == EnumStatusCommande.NEW_COMMANDE
+					|| commande.getStatus() == EnumStatusCommande.COMMANDE_PARTIE_PRET_A_ENVOYER ) {
+				article.setStatusArticle(EnumStatusArticle.ARTICLE_NON_ENVOYE);
+			}
+			if(commande.getStatus() == EnumStatusCommande.COMMANDE_SUR_LA_ROUTE) {
+				article.setStatusArticle(EnumStatusArticle.ARTICLE_ENVOYE_SUR_LA_ROUTE);
+			}
+			if(commande.getStatus() == EnumStatusCommande.COMMANDE_MANQUE_INFO_CLIENT) {
+				article.setStatusArticle(EnumStatusArticle.ARTICLE_ARRIVE_EN_CHINE_MANQUE_INFO_CLIENT);
+			}
+			if(commande.getStatus() == EnumStatusCommande.COMMANDE_PRET_A_DISTRIBUER) {
+				article.setStatusArticle(EnumStatusArticle.ARTICLE_ARRIVE_EN_CHINE_PRET_A_DISTRIBUER);
+			}
+			if(commande.getStatus() == EnumStatusCommande.TERMINE) {
+				article.setStatusArticle(EnumStatusArticle.ARTICLE_TERMINE);
+			}
+		}
+		return commande;
+	}
 	
 	public static Commande computeStatusCommande(Commande commande) {
 		if(commande.getStatus() == EnumStatusCommande.NEW_COMMANDE 
 				|| commande.getStatus() == EnumStatusCommande.COMMANDE_PARTIE_PRET
 				|| commande.getStatus() == EnumStatusCommande.COMMANDE_PARTIE_PRET_A_ENVOYER
-				|| commande.getStatus() == EnumStatusCommande.COMMANDE_PRET_A_ENVOYER) {
+				|| commande.getStatus() == EnumStatusCommande.COMMANDE_PRET_A_ENVOYER
+				|| commande.getStatus() == EnumStatusCommande.ERREUR_IN_COMMANDE) {
 			EnumStatusCommande statusCommande = EnumStatusCommande.COMMANDE_PRET_A_ENVOYER;
 			
 			boolean isArticleNonPrepare = true;
 			boolean isArticlePretAEnvoyer = true;
+			boolean isArticleErreur = false;
 			for(Article article : commande.getArticles()) {
-				if(article.getStatusArticle() == EnumStatusArticle.PREPARE_PARTIE) {
+				if(article.getStatusArticlePreparation() == EnumStatusArticlePreparation.PREPARE_PARTIE) {
 					statusCommande = EnumStatusCommande.COMMANDE_PARTIE_PRET;
 					isArticlePretAEnvoyer = false;
 				}
-				if(article.getStatusArticle() != EnumStatusArticle.NON_PREPARE) {
+				if(article.getStatusArticlePreparation() != EnumStatusArticlePreparation.NON_PREPARE) {
 					isArticleNonPrepare = false;
 				}else {
 					isArticlePretAEnvoyer = false;
+				}
+				
+				if(article.getStatusArticlePreparation() == EnumStatusArticlePreparation.QTE_INCORRECT) {
+					isArticleErreur = true;
 				}
 			}
 			
@@ -91,7 +120,7 @@ public class DaigouUtil {
 				statusCommande = EnumStatusCommande.COMMANDE_PARTIE_PRET;
 				boolean isComamndePartiePretAEnvoyer = false;
 				for(Article article : commande.getArticles()) {
-					if(article.getStatusArticle() == EnumStatusArticle.PREPARE_TOUT) {
+					if(article.getStatusArticlePreparation() == EnumStatusArticlePreparation.PREPARE_TOUT) {
 						isComamndePartiePretAEnvoyer = true;
 					}
 				}
@@ -104,16 +133,20 @@ public class DaigouUtil {
 				statusCommande = EnumStatusCommande.COMMANDE_PRET_A_ENVOYER;
 			}
 			
+			if(isArticleErreur) {
+				statusCommande = EnumStatusCommande.ERREUR_IN_COMMANDE;
+			}
+			
 			commande.setStatus(statusCommande);
 		}
 		if(commande.getStatus() == EnumStatusCommande.COMMANDE_MANQUE_INFO_CLIENT || commande.getStatus() == EnumStatusCommande.COMMANDE_PRET_A_DISTRIBUER) {
-			commande.setStatus(DaigouUtil.isCommandeArriveePretADistribuer(commande));
+			commande.setStatus(DaigouUtils.isCommandeArriveePretADistribuer(commande));
 		}
 		
 		return commande;
 	}
 	
-	public static EnumStatusArticle computeStatusArticle(Article article){
+	public static EnumStatusArticlePreparation computeStatusArticlePreparation(Article article){
 		int count = article.getCount();
 		int countAchete = article.getCountArticleAchete();
 		int countFromStockageEnFrance = article.getCountArticleFromStockageFrance();
@@ -122,13 +155,13 @@ public class DaigouUtil {
 		
 		int countPrepare = countAchete + countFromStockageEnFrance + countFromStockageEnChine + countFromStockageEnRoute;
 		if(count == countPrepare) {
-			return EnumStatusArticle.PREPARE_TOUT;
+			return EnumStatusArticlePreparation.PREPARE_TOUT;
 		}else if(count < countPrepare) {
-			return EnumStatusArticle.QTE_INCORRECT;
+			return EnumStatusArticlePreparation.QTE_INCORRECT;
 		}else if(count > countPrepare && countPrepare != 0) {
-			return EnumStatusArticle.PREPARE_PARTIE;
+			return EnumStatusArticlePreparation.PREPARE_PARTIE;
 		}else {
-			return EnumStatusArticle.NON_PREPARE;
+			return EnumStatusArticlePreparation.NON_PREPARE;
 		}
 	}
 	

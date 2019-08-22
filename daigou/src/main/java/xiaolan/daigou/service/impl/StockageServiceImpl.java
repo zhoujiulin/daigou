@@ -41,8 +41,12 @@ public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> im
 			as.setCountStockageChine(as.getCountStockageChine() + articleStockage.getCountStockageChine());
 			as.setCountStockageEnRoute(as.getCountStockageEnRoute() + articleStockage.getCountStockageEnRoute());
 			as.setCountStockageFranceAvailable(as.getCountStockageFranceAvailable() + articleStockage.getCountStockageFranceAvailable());
+			as.setCountStockageFranceReserve(as.getCountStockageFranceReserve() + articleStockage.getCountStockageFranceReserve());
 			as.setCountStockageFranceColis(as.getCountStockageFranceColis() + articleStockage.getCountStockageFranceColis());
-
+			
+			as.setCountStockageChineAvailable(as.getCountStockageChineAvailable() + articleStockage.getCountStockageChineAvailable());
+			as.setCountStockageEnRouteAvailable(as.getCountStockageEnRouteAvailable() + articleStockage.getCountStockageEnRouteAvailable());
+			
 			return this.stockageDao.save(as);
 		}else {
 			

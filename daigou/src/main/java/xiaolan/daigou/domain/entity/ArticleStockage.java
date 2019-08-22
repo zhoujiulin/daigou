@@ -33,17 +33,26 @@ public class ArticleStockage implements Serializable{
 	@Column(name="price_achat_stockage")
     private double priceAchatStockage;
     
-	@Column(name="count_stockage_chine")
-    private int countStockageChine;
-    
 	@Column(name="count_stokcage_france_available")
     private int countStockageFranceAvailable;
     
+	@Column(name="count_stokcage_france_reserve")
+    private int countStockageFranceReserve;
+	
 	@Column(name="count_stokcage_france_colis")
     private int countStockageFranceColis;
 	
 	@Column(name="count_stokcage_en_route")
     private int countStockageEnRoute;
+	
+	@Column(name="count_stokcage_en_route_available")
+    private int countStockageEnRouteAvailable;
+	
+	@Column(name="count_stockage_chine")
+    private int countStockageChine;
+    
+	@Column(name="count_stokcage_chine_available")
+    private int countStockageChineAvailable;
 	
 	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
 	@JoinColumn(name = "utilisateur_id", nullable=false)
@@ -87,6 +96,14 @@ public class ArticleStockage implements Serializable{
 		this.countStockageFranceAvailable = countStockageFranceAvailable;
 	}
 
+	public int getCountStockageFranceReserve() {
+		return countStockageFranceReserve;
+	}
+
+	public void setCountStockageFranceReserve(int countStockageFranceReserve) {
+		this.countStockageFranceReserve = countStockageFranceReserve;
+	}
+
 	public int getCountStockageFranceColis() {
 		return countStockageFranceColis;
 	}
@@ -102,7 +119,23 @@ public class ArticleStockage implements Serializable{
     public int getCountStockageEnRoute(){
         return this.countStockageEnRoute;
     }
-    
+
+	public int getCountStockageEnRouteAvailable() {
+		return countStockageEnRouteAvailable;
+	}
+
+	public void setCountStockageEnRouteAvailable(int countStockageEnRouteAvailable) {
+		this.countStockageEnRouteAvailable = countStockageEnRouteAvailable;
+	}
+
+	public int getCountStockageChineAvailable() {
+		return countStockageChineAvailable;
+	}
+
+	public void setCountStockageChineAvailable(int countStockageChineAvailable) {
+		this.countStockageChineAvailable = countStockageChineAvailable;
+	}
+
 	public Utilisateur getUtilisateur() {
 		return utilisateur;
 	}

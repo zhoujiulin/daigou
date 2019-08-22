@@ -3,7 +3,7 @@ package xiaolan.daigou.common.enums;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import xiaolan.daigou.common.serialize.StatusArticleDeserializer;
+import xiaolan.daigou.common.serialize.StatusArticlePreparationDeserializer;
 import xiaolan.daigou.common.serialize.TypeCommandeDeserializer;
 
 @JsonDeserialize(using = TypeCommandeDeserializer.class)

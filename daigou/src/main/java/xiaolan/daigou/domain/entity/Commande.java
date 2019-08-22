@@ -41,7 +41,7 @@ public class Commande implements Serializable{
 	@GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 	
-	@ManyToOne(fetch=FetchType.EAGER, cascade = {CascadeType.PERSIST})
+	@ManyToOne(fetch=FetchType.EAGER, cascade = {CascadeType.MERGE})
 	@JoinColumn(name="client_id")
     private Client client;
     

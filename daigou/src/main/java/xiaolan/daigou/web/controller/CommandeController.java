@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,10 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import xiaolan.daigou.common.enums.EnumStatusArticle;
+import xiaolan.daigou.common.enums.EnumStatusArticlePreparation;
 import xiaolan.daigou.common.enums.EnumStatusCommande;
 import xiaolan.daigou.common.enums.EnumStatusCommandeGroup;
 import xiaolan.daigou.common.enums.EnumTypeCommande;
+import xiaolan.daigou.domain.dto.CommandeDTO;
 import xiaolan.daigou.domain.entity.Commande;
 import xiaolan.daigou.service.CommandeService;
 import xiaolan.daigou.web.security.jwt.JwtUser;
@@ -37,12 +39,15 @@ public class CommandeController {
 	@Autowired
 	private CommandeService commandeService;
 	
+    @Autowired
+    protected Mapper dozerMapper;
+	
 	@PostMapping(value="/creationcommande")
 	@ResponseBody
-	public Commande creationCommande(@RequestBody Commande commande, Authentication authentication){
+	public Commande creationCommande(@RequestBody CommandeDTO commandeDTO, Authentication authentication){
 		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
-		
-		return this.commandeService.createNewCommande(commande, jwtUser.getId());
+
+		return this.commandeService.createNewCommande(dozerMapper.map(commandeDTO, Commande.class), jwtUser.getId());
 	}
 	
 	@GetMapping(value="/commande/{id}")
@@ -83,12 +88,12 @@ public class CommandeController {
 	@ResponseBody
 	public Commande updateCommande(@RequestBody Commande commande){
 		
-		return this.commandeService.saveCommande(commande);
+		return this.commandeService.updateCommande(commande);
 	}
 	
 	@DeleteMapping(value="/deletecommande")
 	public void deleteCommande(@RequestParam(value = "idCommande") String idCommande) {
 	
-		this.commandeService.deleteById(Long.valueOf(idCommande));
+		this.commandeService.deleteCommandeById(Long.valueOf(idCommande));
 	}
 }

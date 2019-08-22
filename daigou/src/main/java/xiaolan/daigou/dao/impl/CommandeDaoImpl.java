@@ -53,4 +53,16 @@ public class CommandeDaoImpl extends BaseDaoImpl<Commande> implements CommandeDa
 
 		return query.getResultList();
 	}
+
+	@Override
+	public List<Commande> getCommandeByClient(Long idClient, Long idUser) {
+		StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append(" from Commande as c where c.client.id = ? and c.utilisateur.idUser = ?");
+		
+		Query query = em.createQuery(queryBuilder.toString(), this.clazz);
+	    query.setParameter(0, idClient);
+	    query.setParameter(1, idUser);
+	    
+		return query.getResultList();
+	}
 }

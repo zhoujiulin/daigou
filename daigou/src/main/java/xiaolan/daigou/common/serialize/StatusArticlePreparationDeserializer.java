@@ -9,12 +9,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import xiaolan.daigou.common.enums.EnumStatusColis;
+import xiaolan.daigou.common.enums.EnumStatusArticlePreparation;
 
-public class StatusColisDeserializer extends JsonDeserializer<EnumStatusColis> {
+public class StatusArticlePreparationDeserializer extends JsonDeserializer<EnumStatusArticlePreparation> {
 
 	@Override
-	public EnumStatusColis deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
+	public EnumStatusArticlePreparation deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
 			throws IOException, JsonProcessingException {
 		
 		ObjectCodec oc = jsonParser.getCodec();
@@ -30,7 +30,7 @@ public class StatusColisDeserializer extends JsonDeserializer<EnumStatusColis> {
         }
         
         int index = Integer.valueOf(nodeIndex.toString());
-        for(EnumStatusColis status : EnumStatusColis.values()) {
+        for(EnumStatusArticlePreparation status : EnumStatusArticlePreparation.values()) {
         	if(index == status.getIndex()) {
         		return status;
         	}

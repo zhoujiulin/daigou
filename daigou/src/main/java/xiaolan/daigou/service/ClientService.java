@@ -1,10 +1,15 @@
 package xiaolan.daigou.service;
 
-import xiaolan.daigou.domain.entity.Client;
+import java.util.List;
 
-public interface ClientService {
+import xiaolan.daigou.domain.dto.ClientDTO;
+import xiaolan.daigou.domain.entity.Client;
+import xiaolan.daigou.domain.entity.Colis;
+import xiaolan.daigou.domain.entity.Commande;
+
+public interface ClientService extends AbstractService<Client>{
+
+	List<ClientDTO> getClientHasCommandeEnCours(Long idUser);
 	
-	Client createClient(Client client);
-	
-	Client findClientById(Long id);
+	List<Commande> getCommandeByClient(Long idClient, Long idUser);
 }
