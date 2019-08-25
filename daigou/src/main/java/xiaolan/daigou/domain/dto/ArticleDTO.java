@@ -57,6 +57,10 @@ public class ArticleDTO {
     private Date dateDistribution;
 
     private Date dateTermine;
+    
+    private int countSelectedEnRouteToChine;
+    
+	private UtilisateurDTO utilisateur;
 
 	public Long getIdArticle() {
 		return idArticle;
@@ -208,5 +212,21 @@ public class ArticleDTO {
 
 	public void setDateTermine(Date dateTermine) {
 		this.dateTermine = dateTermine;
+	}
+
+	public int getCountSelectedEnRouteToChine() {
+		return countSelectedEnRouteToChine;
+	}
+
+	public void setCountSelectedEnRouteToChine(int countSelectedEnRouteToChine) {
+		this.countSelectedEnRouteToChine = countSelectedEnRouteToChine;
+	}
+
+	public UtilisateurDTO getUtilisateur() {
+		return utilisateur;
+	}
+
+	public void setUtilisateur(UtilisateurDTO utilisateur) {
+		this.utilisateur = utilisateur;
 	}
 }

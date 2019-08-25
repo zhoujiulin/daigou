@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import xiaolan.daigou.common.enums.EnumStatusColis;
+import xiaolan.daigou.domain.dto.ArticleDTO;
+import xiaolan.daigou.domain.dto.ArticleMapEnRouteDTO;
+import xiaolan.daigou.domain.dto.ArticleMapEnRoutesDTO;
+import xiaolan.daigou.domain.dto.ArticleStockageDTO;
+import xiaolan.daigou.domain.dto.ColisDTO;
 import xiaolan.daigou.domain.entity.Article;
-import xiaolan.daigou.domain.entity.ArticleStockage;
 import xiaolan.daigou.domain.entity.Colis;
 import xiaolan.daigou.service.ArticleService;
 import xiaolan.daigou.service.ColisService;
@@ -36,10 +40,10 @@ public class ColisController {
 	
 	@Autowired
 	private StockageService stockageService;
-	
+
 	@PostMapping(value="/createcolis")
 	@ResponseBody
-	public Colis createColis(@RequestBody Colis colis, Authentication authentication) {
+	public Colis createColis(@RequestBody ColisDTO colisDTO, Authentication authentication) {
 		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
 		
 		return this.colisService.createColis(jwtUser.getId());
@@ -66,31 +70,28 @@ public class ColisController {
 	
 	@PostMapping(value="/arrivercolis")
 	@ResponseBody
-	public Colis arriverColis(@RequestBody Colis colis, Authentication authentication) {
+	public ColisDTO arriverColis(@RequestBody ArticleMapEnRoutesDTO articlesMapEnRoutesDTO, Authentication authentication) {
 		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
-		return this.colisService.arriverColis(colis);
+		ColisDTO colisDTO = this.colisService.arriverColis(articlesMapEnRoutesDTO);
+		return colisDTO;
 	}
 
 	@PostMapping(value="/putarticlestockageincolis")
 	@ResponseBody
-	public Article putArticleStockageInColis(@RequestBody ArticleStockage articleStockage, @RequestParam(value = "idColis") int idColis, 
+	public Article putArticleStockageInColis(@RequestBody ArticleStockageDTO articleStockageDTO, @RequestParam(value = "idColis") int idColis, 
 			@RequestParam(value = "countArticleStockage") int countArticleStockage, Authentication authentication) {
 		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
 		
-		return this.colisService.putArticleStockageInColis(articleStockage, idColis, countArticleStockage);
+		return this.colisService.putArticleStockageInColis(articleStockageDTO, idColis, countArticleStockage);
 	}
 	
 	@PostMapping(value="/deletearticlefromcolis")
 	@ResponseBody
-	public void deleteArticleFromColis(@RequestBody Article article, Authentication authentication) {
+	public void deleteArticleFromColis(@RequestBody ArticleDTO articleDTO, Authentication authentication) {
 		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
 		
-		ArticleStockage articleStockage = stockageService.findByNameArticleStockage(article.getNameArticle(), jwtUser.getId());
-		articleStockage.setCountStockageFranceAvailable(articleStockage.getCountStockageFranceAvailable() + article.getCount());
-		articleStockage.setCountStockageFranceColis(articleStockage.getCountStockageFranceColis() - article.getCount());
-		stockageService.save(articleStockage);
-		
-		articleService.deleteById(article.getIdArticle());
+		this.stockageService.updateArticleStockageForDeleteArticle(articleDTO, jwtUser.getId());
+		this.articleService.deleteById(articleDTO.getIdArticle());
 	}
 	
 	@DeleteMapping(value="/deletecolis/{id}")

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import xiaolan.daigou.dao.BaseDao;
 import xiaolan.daigou.dao.StockageDao;
 import xiaolan.daigou.dao.UtilisateurDao;
+import xiaolan.daigou.domain.dto.ArticleDTO;
 import xiaolan.daigou.domain.entity.ArticleStockage;
 import xiaolan.daigou.domain.entity.Utilisateur;
 import xiaolan.daigou.service.StockageService;
@@ -62,6 +63,15 @@ public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> im
 	@Override
 	public BaseDao<ArticleStockage> getDao() {
 		return this.stockageDao;
+	}
+	
+
+	@Override
+	public void updateArticleStockageForDeleteArticle(ArticleDTO articleDTO, Long idUser) {
+		ArticleStockage articleStockage = this.findByNameArticleStockage(articleDTO.getNameArticle(), idUser);
+		articleStockage.setCountStockageFranceAvailable(articleStockage.getCountStockageFranceAvailable() + articleDTO.getCount());
+		articleStockage.setCountStockageFranceColis(articleStockage.getCountStockageFranceColis() - articleDTO.getCount());
+		this.save(articleStockage);
 	}
 
 	@Override

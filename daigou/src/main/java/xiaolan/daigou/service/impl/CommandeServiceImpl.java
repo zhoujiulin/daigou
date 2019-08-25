@@ -83,6 +83,7 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
 			a.setTypeArticle(EnumTypeArticle.ARTICLE_CLIENT);
 			a.setStatusArticle(EnumStatusArticle.ARTICLE_NON_ENVOYE);
 			a.setDateCreation(new Date());
+			a.setUtilisateur(utilisateur);
 		}
 		
 		Commande c= this.commandeDao.save(commande);
@@ -146,6 +147,7 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
 		commande = DaigouUtils.computeStatusArticle(commande);
 
 		for(Article article : commande.getArticles()) {
+			article.setUtilisateur(commande.getUtilisateur());
 			article.setCommande(commande);		
 			if(article.getColis() != null) {
 				Colis colis = colisDao.findById(article.getColis().getIdColis());

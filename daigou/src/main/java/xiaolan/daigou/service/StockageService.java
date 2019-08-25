@@ -2,6 +2,7 @@ package xiaolan.daigou.service;
 
 import java.util.List;
 
+import xiaolan.daigou.domain.dto.ArticleDTO;
 import xiaolan.daigou.domain.entity.ArticleStockage;
 
 public interface StockageService extends AbstractService<ArticleStockage> {
@@ -13,4 +14,6 @@ public interface StockageService extends AbstractService<ArticleStockage> {
 	ArticleStockage saveArticleStokage(ArticleStockage articleStockage);
 
 	ArticleStockage findByNameArticleStockage(String nameArticleStockage, long idUser);
+	
+	void updateArticleStockageForDeleteArticle(ArticleDTO articleDTO, Long idUser);
 }

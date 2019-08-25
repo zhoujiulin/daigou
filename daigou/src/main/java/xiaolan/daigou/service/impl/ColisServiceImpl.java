@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,11 @@ import xiaolan.daigou.dao.ColisDao;
 import xiaolan.daigou.dao.CommandeDao;
 import xiaolan.daigou.dao.StockageDao;
 import xiaolan.daigou.dao.UtilisateurDao;
+import xiaolan.daigou.domain.dto.ArticleDTO;
+import xiaolan.daigou.domain.dto.ArticleMapEnRouteDTO;
+import xiaolan.daigou.domain.dto.ArticleMapEnRoutesDTO;
+import xiaolan.daigou.domain.dto.ArticleStockageDTO;
+import xiaolan.daigou.domain.dto.ColisDTO;
 import xiaolan.daigou.domain.entity.Article;
 import xiaolan.daigou.domain.entity.ArticleStockage;
 import xiaolan.daigou.domain.entity.Colis;
@@ -46,6 +52,10 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 	@Autowired
 	private StockageDao stockageDao;
 	
+    @Autowired
+    protected Mapper dozerMapper;
+	
+	
     public ColisServiceImpl() {
         super(Colis.class);
     }
@@ -65,6 +75,7 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 		colis.setStatusColis(EnumStatusColis.COLIS_NON_ENVOYE);
 		colis.setUtilisateur(utilisateur);
 		colis.setNameColis(nameColis);
+		
 		return this.colisDao.save(colis);
 	}
 
@@ -88,20 +99,23 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 		
 		return colis;
 	}
-	
 	@Override
-	public Colis arriverColis(Colis colis) {
-		this.computeCommandeClientPourArriverColis(colis);
+	public ColisDTO arriverColis(ArticleMapEnRoutesDTO articlesMapEnRoutesDTO) {
 		
-		colis = this.colisDao.findById(colis.getIdColis());
+		this.computeCommandeClientPourArriverColis(articlesMapEnRoutesDTO);
+		
+		Colis colis = this.colisDao.findById(articlesMapEnRoutesDTO.getColis().getIdColis());
 		colis.setDateArriver(new Date());
 		colis.setStatusColis(EnumStatusColis.COLIS_ARRIVE_EN_CHINE);
 		
 		colis = colisDao.save(colis);
-		return colis;
+
+		return dozerMapper.map(colis, ColisDTO.class);
 	}
 
-	private void computeCommandeClientPourArriverColis(Colis colis) {
+	private void computeCommandeClientPourArriverColis(ArticleMapEnRoutesDTO articlesMapEnRoutesDTO) {
+		Colis colis = dozerMapper.map(articlesMapEnRoutesDTO.getColis(), Colis.class);
+		
 		List<Commande> commandesClient = new ArrayList<Commande>(); 
 		List<Commande> commandesStockage = new ArrayList<Commande>(); 
 		
@@ -121,10 +135,19 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 				}
 				
 				ArticleStockage articleStockage = this.stockageDao.findByNameArticleStockage(article.getNameArticle(), colis.getUtilisateur().getIdUser());
-				articleStockage.setCountStockageChine(articleStockage.getCountStockageChine() + article.getCount());
-				articleStockage.setCountStockageChineAvailable(articleStockage.getCountStockageChineAvailable() + article.getCount());
 				articleStockage.setCountStockageEnRoute(articleStockage.getCountStockageEnRoute() - article.getCount());
-				articleStockage.setCountStockageEnRouteAvailable(articleStockage.getCountStockageEnRouteAvailable() - article.getCount());
+				articleStockage.setCountStockageChine(articleStockage.getCountStockageChine() + article.getCount());
+				
+				int countSelected = 0;
+				for(ArticleMapEnRouteDTO articleMapEnRouteDTO : articlesMapEnRoutesDTO.getArticleMapEnRoutes()) {
+					if(articleMapEnRouteDTO.getIdArticle().longValue() == article.getIdArticle()) {
+						for(ArticleDTO articleDTO : articleMapEnRouteDTO.getArticles()) {
+							countSelected = countSelected + articleDTO.getCountSelectedEnRouteToChine();
+						}
+					}
+				}
+				articleStockage.setCountStockageChineAvailable(articleStockage.getCountStockageChineAvailable() + article.getCount() - countSelected);
+				
 				this.stockageDao.save(articleStockage);
 			}
 		}
@@ -138,6 +161,17 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 			}
 			commande.setArticles(null);
 			this.commandeDao.delete(commande);
+		}
+		
+		//update stockage change en route to chine
+		for(ArticleMapEnRouteDTO articleMapEnRouteDTO : articlesMapEnRoutesDTO.getArticleMapEnRoutes()) {
+			for(ArticleDTO articleDTO : articleMapEnRouteDTO.getArticles()) {
+				articleDTO.setCountArticleFromStockageChine(articleDTO.getCountArticleFromStockageChine() + articleDTO.getCountSelectedEnRouteToChine());
+				articleDTO.setCountArticleFromStockageEnRoute(articleDTO.getCountArticleFromStockageEnRoute() - articleDTO.getCountSelectedEnRouteToChine());
+				Article article = dozerMapper.map(articleDTO, Article.class);
+				article.setCommande(this.commandeDao.findById(article.getCommande().getId()));
+				this.articleService.save(article);
+			}
 		}
 	}
 	
@@ -341,12 +375,12 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 	}
 
 	@Override
-	public Article putArticleStockageInColis(ArticleStockage articleStockage, int idColis, int countArticleStockage) {
+	public Article putArticleStockageInColis(ArticleStockageDTO articleStockageDTO, int idColis, int countArticleStockage) {
 		Article article = null;
 		boolean isArticleExistsInColis = false;
 		Colis colis = this.colisDao.findById(Long.valueOf(idColis));
 		for(Article a : colis.getArticles()) {
-			if(a.getTypeArticle() == EnumTypeArticle.ARTICLE_STOCKAGE && a.getNameArticle().equals(articleStockage.getNameArticleStockage())) {
+			if(a.getTypeArticle() == EnumTypeArticle.ARTICLE_STOCKAGE && a.getNameArticle().equals(articleStockageDTO.getNameArticleStockage())) {
 				isArticleExistsInColis = true;
 				article = a;
 			}
@@ -356,19 +390,22 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 			article.setColis(colis);
 		}else {
 			article = new Article();
-			article.setNameArticle(articleStockage.getNameArticleStockage());
+			article.setNameArticle(articleStockageDTO.getNameArticleStockage());
 			article.setTypeArticle(EnumTypeArticle.ARTICLE_STOCKAGE);
 			article.setStatusArticlePreparation(EnumStatusArticlePreparation.STOCKAGE);
 			article.setStatusArticle(EnumStatusArticle.ARTICLE_NON_ENVOYE);
 			article.setDateCreation(new Date());
 			article.setCount(countArticleStockage);
 			article.setColis(colis);
+			article.setUtilisateur(colis.getUtilisateur());
 		}
 		
 		article = this.articleService.save(article);
 		
-		articleStockage.setCountStockageFranceColis(articleStockage.getCountStockageFranceColis() + countArticleStockage);
-		articleStockage.setCountStockageFranceAvailable(articleStockage.getCountStockageFranceAvailable() - countArticleStockage);
+		articleStockageDTO.setCountStockageFranceColis(articleStockageDTO.getCountStockageFranceColis() + countArticleStockage);
+		articleStockageDTO.setCountStockageFranceAvailable(articleStockageDTO.getCountStockageFranceAvailable() - countArticleStockage);
+		
+		ArticleStockage articleStockage = this.dozerMapper.map(articleStockageDTO, ArticleStockage.class);
 		this.stockageDao.save(articleStockage);
 		
 		return article;

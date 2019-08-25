@@ -97,6 +97,10 @@ public class Article implements Serializable{
 	@Column(name="date_termine")
     private Date dateTermine;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "utilisateur_id", nullable=false)
+	private Utilisateur utilisateur;
+	
     public Article() {
 
     }
@@ -243,5 +247,13 @@ public class Article implements Serializable{
 
 	public void setDateTermine(Date dateTermine) {
 		this.dateTermine = dateTermine;
+	}
+
+	public Utilisateur getUtilisateur() {
+		return utilisateur;
+	}
+
+	public void setUtilisateur(Utilisateur utilisateur) {
+		this.utilisateur = utilisateur;
 	}
 }
