@@ -2,8 +2,8 @@ package xiaolan.daigou.service;
 
 import java.util.List;
 
-import xiaolan.daigou.domain.LoginUserForm;
-import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.model.LoginUserForm;
+import xiaolan.daigou.model.entity.Utilisateur;
 
 public interface UserService {
 

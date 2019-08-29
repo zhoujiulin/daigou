@@ -3,7 +3,7 @@ package xiaolan.daigou.common.converter;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import xiaolan.daigou.common.enums.EnumTypeArticle;
+import xiaolan.daigou.model.enums.EnumTypeArticle;
 
 @Converter
 public class TypeArticleConverter  implements AttributeConverter<EnumTypeArticle, Integer> {

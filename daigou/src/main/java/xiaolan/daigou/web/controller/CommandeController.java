@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import xiaolan.daigou.common.enums.EnumStatusArticlePreparation;
-import xiaolan.daigou.common.enums.EnumStatusCommande;
-import xiaolan.daigou.common.enums.EnumStatusCommandeGroup;
-import xiaolan.daigou.common.enums.EnumTypeCommande;
-import xiaolan.daigou.domain.dto.CommandeDTO;
-import xiaolan.daigou.domain.entity.Commande;
+import xiaolan.daigou.model.dto.CommandeDTO;
+import xiaolan.daigou.model.entity.Commande;
+import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
+import xiaolan.daigou.model.enums.EnumStatusCommande;
+import xiaolan.daigou.model.enums.EnumStatusCommandeGroup;
+import xiaolan.daigou.model.enums.EnumTypeCommande;
 import xiaolan.daigou.service.CommandeService;
 import xiaolan.daigou.web.security.jwt.JwtUser;
 

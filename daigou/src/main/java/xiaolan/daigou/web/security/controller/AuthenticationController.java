@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import xiaolan.daigou.common.exception.UnauthorizedException;
 import xiaolan.daigou.common.utils.JwtTokenUtil;
-import xiaolan.daigou.domain.UserDTO;
-import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.model.UserDTO;
+import xiaolan.daigou.model.entity.Utilisateur;
 import xiaolan.daigou.web.security.jwt.JwtUser;
 
 @RestController

@@ -9,9 +9,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import xiaolan.daigou.common.enums.EnumStatusArticlePreparation;
-import xiaolan.daigou.common.enums.EnumStatusCommande;
-import xiaolan.daigou.common.enums.EnumStatusCommandeGroup;
+import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
+import xiaolan.daigou.model.enums.EnumStatusCommande;
+import xiaolan.daigou.model.enums.EnumStatusCommandeGroup;
 
 public class StatusCommandeGroupDeserializer extends JsonDeserializer<EnumStatusCommandeGroup> {
 

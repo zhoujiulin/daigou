@@ -3,12 +3,12 @@ package xiaolan.daigou.service;
 import java.util.List;
 import java.util.Map;
 
-import xiaolan.daigou.common.enums.EnumStatusArticlePreparation;
-import xiaolan.daigou.common.enums.EnumTypeCommande;
-import xiaolan.daigou.domain.entity.Article;
-import xiaolan.daigou.domain.entity.ArticleStockage;
-import xiaolan.daigou.domain.entity.Colis;
-import xiaolan.daigou.domain.entity.Commande;
+import xiaolan.daigou.model.entity.Article;
+import xiaolan.daigou.model.entity.ArticleStockage;
+import xiaolan.daigou.model.entity.Colis;
+import xiaolan.daigou.model.entity.Commande;
+import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
+import xiaolan.daigou.model.enums.EnumTypeCommande;
 
 public interface CommandeService extends AbstractService<Commande> {
 

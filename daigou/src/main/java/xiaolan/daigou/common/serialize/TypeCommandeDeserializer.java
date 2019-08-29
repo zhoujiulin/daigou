@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import xiaolan.daigou.common.enums.EnumTypeCommande;
+import xiaolan.daigou.model.enums.EnumTypeCommande;
 
 public class TypeCommandeDeserializer extends JsonDeserializer<EnumTypeCommande> {
 

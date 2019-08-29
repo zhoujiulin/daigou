@@ -8,29 +8,32 @@ import java.util.List;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import xiaolan.daigou.common.enums.EnumStatusArticle;
-import xiaolan.daigou.common.enums.EnumStatusArticlePreparation;
-import xiaolan.daigou.common.enums.EnumStatusColis;
-import xiaolan.daigou.common.enums.EnumStatusCommande;
-import xiaolan.daigou.common.enums.EnumTypeArticle;
-import xiaolan.daigou.common.enums.EnumTypeCommande;
 import xiaolan.daigou.common.utils.DaigouUtils;
 import xiaolan.daigou.dao.BaseDao;
 import xiaolan.daigou.dao.ColisDao;
 import xiaolan.daigou.dao.CommandeDao;
 import xiaolan.daigou.dao.StockageDao;
 import xiaolan.daigou.dao.UtilisateurDao;
-import xiaolan.daigou.domain.dto.ArticleDTO;
-import xiaolan.daigou.domain.dto.ArticleMapEnRouteDTO;
-import xiaolan.daigou.domain.dto.ArticleMapEnRoutesDTO;
-import xiaolan.daigou.domain.dto.ArticleStockageDTO;
-import xiaolan.daigou.domain.dto.ColisDTO;
-import xiaolan.daigou.domain.entity.Article;
-import xiaolan.daigou.domain.entity.ArticleStockage;
-import xiaolan.daigou.domain.entity.Colis;
-import xiaolan.daigou.domain.entity.Commande;
-import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.model.dto.ArticleDTO;
+import xiaolan.daigou.model.dto.ArticleMapEnRouteDTO;
+import xiaolan.daigou.model.dto.ArticleMapEnRoutesDTO;
+import xiaolan.daigou.model.dto.ArticleStockageDTO;
+import xiaolan.daigou.model.dto.ColisDTO;
+import xiaolan.daigou.model.entity.Article;
+import xiaolan.daigou.model.entity.ArticleStockage;
+import xiaolan.daigou.model.entity.Colis;
+import xiaolan.daigou.model.entity.Commande;
+import xiaolan.daigou.model.entity.Utilisateur;
+import xiaolan.daigou.model.enums.EnumStatusArticle;
+import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
+import xiaolan.daigou.model.enums.EnumStatusColis;
+import xiaolan.daigou.model.enums.EnumStatusCommande;
+import xiaolan.daigou.model.enums.EnumTypeArticle;
+import xiaolan.daigou.model.enums.EnumTypeCommande;
+import xiaolan.daigou.model.exception.DaigouException;
 import xiaolan.daigou.service.ArticleService;
 import xiaolan.daigou.service.ColisService;
 
@@ -61,6 +64,7 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
     }
 	
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public Colis createColis(Long idUser) {
 		String nameColis = "Colis 1";
 		Colis lastColis = this.colisDao.getLastColis(idUser);
@@ -80,6 +84,7 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 	}
 
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public List<Colis> getColisByStatus(int status, Long idUser) {
 		return colisDao.getColisByStatus(status, idUser);
 	}
@@ -99,7 +104,9 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 		
 		return colis;
 	}
+	
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public ColisDTO arriverColis(ArticleMapEnRoutesDTO articlesMapEnRoutesDTO) {
 		
 		this.computeCommandeClientPourArriverColis(articlesMapEnRoutesDTO);
@@ -125,6 +132,9 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 			if(article.getTypeArticle() == EnumTypeArticle.ARTICLE_CLIENT) {
 				if(!commandesClient.contains(commande)){
 					commande.setStatus(DaigouUtils.isCommandeArriveePretADistribuer(commande));
+					for(Article a : commande.getArticles()) {
+						a.setDateArrive(new Date());
+					}
 					commandesClient.add(commande);
 				}
 			}
@@ -140,24 +150,26 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 				
 				int countSelected = 0;
 				for(ArticleMapEnRouteDTO articleMapEnRouteDTO : articlesMapEnRoutesDTO.getArticleMapEnRoutes()) {
-					if(articleMapEnRouteDTO.getIdArticle().longValue() == article.getIdArticle()) {
+					if(articleMapEnRouteDTO.getIdArticle().longValue() == article.getIdArticle().longValue()) {
 						for(ArticleDTO articleDTO : articleMapEnRouteDTO.getArticles()) {
 							countSelected = countSelected + articleDTO.getCountSelectedEnRouteToChine();
 						}
 					}
 				}
 				articleStockage.setCountStockageChineAvailable(articleStockage.getCountStockageChineAvailable() + article.getCount() - countSelected);
+				articleStockage.setCountStockageEnRouteAvailable(articleStockage.getCountStockageChineAvailable() - article.getCount());
 				
 				this.stockageDao.save(articleStockage);
 			}
 		}
 		
-		this.updateStatusCommandeForFullSendCommande(commandesClient, colis, EnumStatusCommande.COMMANDE_PRET_A_DISTRIBUER);
+		this.updateStatusCommandeForFullSendCommande(commandesClient, colis, EnumStatusCommande.COMMANDE_PRET_A_DISTRIBUER, false);
 		for(Commande commande : commandesStockage) {
 			colis = this.colisDao.findById(colis.getIdColis());
 			for(Article a : commande.getArticles()) {
 				a.setColis(colis);
 				a.setCommande(null);
+				a.setDateArrive(new Date());
 			}
 			commande.setArticles(null);
 			this.commandeDao.delete(commande);
@@ -198,8 +210,8 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 			}
 		}
 		
-		this.updateStatusCommandeForFullSendCommande(fullSendCommandes, colis, EnumStatusCommande.COMMANDE_SUR_LA_ROUTE);
-		this.updateStatusCommandeForPartSendCommande(partSendCommande, colis);
+		this.updateStatusCommandeForFullSendCommande(fullSendCommandes, colis, EnumStatusCommande.COMMANDE_SUR_LA_ROUTE, true);
+		this.updateStatusCommandeForPartSendCommande(partSendCommande, colis, true);
 		
 		if(articlesStockages != null && !articlesStockages.isEmpty()) {
 			this.envoyerArticlesStockages(articlesStockages, colis);
@@ -236,7 +248,7 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 		this.commandeDao.save(commande);
 	}
 
-	private void updateStatusCommandeForPartSendCommande(List<Commande> partSendCommande, Colis colis) {
+	private void updateStatusCommandeForPartSendCommande(List<Commande> partSendCommande, Colis colis, boolean isEnvoyer) {
 		for(Commande commande : partSendCommande) {
 			Commande newCommande = DaigouUtils.createNewObjectCommande(commande, colis.getUtilisateur(), EnumStatusCommande.COMMANDE_SUR_LA_ROUTE);
 			
@@ -278,12 +290,12 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 			commande = DaigouUtils.computeStatusArticle(commande);
 			this.commandeDao.save(commande);
 			
-			this.updateArticleStockageFrancePourEnvoyerColis(newCommande);
+			this.updateArticleStockageFrancePourEnvoyerColis(newCommande, isEnvoyer);
 			this.commandeDao.save(newCommande);
 		}
 	}
 
-	private void updateStatusCommandeForFullSendCommande(List<Commande> fullSendCommandes, Colis colis, EnumStatusCommande newStatus) {
+	private void updateStatusCommandeForFullSendCommande(List<Commande> fullSendCommandes, Colis colis, EnumStatusCommande newStatus, boolean isEnvoyer) {
 		for(Commande commande : fullSendCommandes) {
 			boolean isHasArticlePreparePartie = false;
 			for(Article article : commande.getArticles()) {
@@ -291,6 +303,7 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 					isHasArticlePreparePartie = true;
 				}
 			}
+			newStatus = pretADistribuerOuManqueInfoClient(newStatus, commande);
 			
 			if(isHasArticlePreparePartie) {
 				Commande newCommande = DaigouUtils.createNewObjectCommande(commande, colis.getUtilisateur(), newStatus);
@@ -333,7 +346,7 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 					}
 				}
 				
-				this.updateArticleStockageFrancePourEnvoyerColis(newCommande);
+				this.updateArticleStockageFrancePourEnvoyerColis(newCommande, isEnvoyer);
 				this.commandeDao.save(newCommande);
 				commande = DaigouUtils.computeStatusCommande(commande);
 				commande = DaigouUtils.computeStatusArticle(commande);
@@ -341,7 +354,7 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 			}else {
 				commande.setStatus(newStatus);
 				commande = DaigouUtils.computeStatusArticle(commande);
-				this.updateArticleStockageFrancePourEnvoyerColis(commande);
+				this.updateArticleStockageFrancePourEnvoyerColis(commande, isEnvoyer);
 
 				this.commandeDao.save(commande);
 			}
@@ -349,13 +362,27 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 		}
 	}
 	
-	private void updateArticleStockageFrancePourEnvoyerColis(Commande commande) {
+	private EnumStatusCommande pretADistribuerOuManqueInfoClient(EnumStatusCommande status, Commande commande) {
+		if(status == EnumStatusCommande.COMMANDE_PRET_A_DISTRIBUER) {
+			if(commande.getClient().getNameWechat() == null || commande.getClient().getNameWechat().equals("")
+					|| commande.getClient().getTelephone() == null || commande.getClient().getTelephone().equals("")
+					|| commande.getClient().getAdresse() == null || commande.getClient().getAdresse().equals("")) {
+				status = EnumStatusCommande.COMMANDE_MANQUE_INFO_CLIENT;
+			}
+		}
+		
+		return status;
+	}
+	
+	private void updateArticleStockageFrancePourEnvoyerColis(Commande commande, boolean isEnvoyer) {
 		// update stockage france
-		for(Article article : commande.getArticles()) {
-			if(article.getCountArticleFromStockageFrance() > 0) {
-				ArticleStockage articleStockage = this.stockageDao.findByNameArticleStockage(article.getNameArticle(), commande.getUtilisateur().getIdUser());
-				articleStockage.setCountStockageFranceReserve(articleStockage.getCountStockageFranceReserve() - article.getCountArticleFromStockageFrance());
-				this.stockageDao.save(articleStockage);
+		if(isEnvoyer) {
+			for(Article article : commande.getArticles()) {
+				if(article.getCountArticleFromStockageFrance() > 0) {
+					ArticleStockage articleStockage = this.stockageDao.findByNameArticleStockage(article.getNameArticle(), commande.getUtilisateur().getIdUser());
+					articleStockage.setCountStockageFranceReserve(articleStockage.getCountStockageFranceReserve() - article.getCountArticleFromStockageFrance());
+					this.stockageDao.save(articleStockage);
+				}
 			}
 		}
 	}
@@ -375,6 +402,7 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 	}
 
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public Article putArticleStockageInColis(ArticleStockageDTO articleStockageDTO, int idColis, int countArticleStockage) {
 		Article article = null;
 		boolean isArticleExistsInColis = false;

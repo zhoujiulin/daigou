@@ -5,13 +5,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Date;
 
-import xiaolan.daigou.common.enums.EnumStatusArticle;
-import xiaolan.daigou.common.enums.EnumStatusArticlePreparation;
-import xiaolan.daigou.common.enums.EnumStatusCommande;
-import xiaolan.daigou.domain.entity.Article;
-import xiaolan.daigou.domain.entity.Commande;
-import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.model.entity.Article;
+import xiaolan.daigou.model.entity.Commande;
+import xiaolan.daigou.model.entity.Utilisateur;
+import xiaolan.daigou.model.enums.EnumStatusArticle;
+import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
+import xiaolan.daigou.model.enums.EnumStatusCommande;
 
 public class DaigouUtils {
 

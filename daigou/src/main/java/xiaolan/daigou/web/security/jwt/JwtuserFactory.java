@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.model.entity.Utilisateur;
 
 public class JwtuserFactory {
 

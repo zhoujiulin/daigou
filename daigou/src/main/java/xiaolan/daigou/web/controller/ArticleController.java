@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import xiaolan.daigou.domain.dto.ArticleDTO;
-import xiaolan.daigou.domain.dto.ArticleInClientDTO;
-import xiaolan.daigou.domain.dto.ColisDTO;
-import xiaolan.daigou.domain.entity.ArticleStockage;
+import xiaolan.daigou.model.dto.ArticleDTO;
+import xiaolan.daigou.model.dto.ArticleInClientDTO;
+import xiaolan.daigou.model.dto.ColisDTO;
 import xiaolan.daigou.service.ArticleService;
 import xiaolan.daigou.web.security.jwt.JwtUser;
 
@@ -26,14 +25,12 @@ public class ArticleController {
 	@Autowired
 	private ArticleService articleService;
 	
-	@PostMapping(value="/terminerarticle")
+	@PostMapping(value="/envoyerarticleauclient")
 	@ResponseBody
-	public void terminerArticle(@RequestBody ArticleInClientDTO articleInClient, Authentication authentication) {
+	public void envoyerArticleAuClient(@RequestBody ArticleInClientDTO articleInClient, Authentication authentication) {
 		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
 		
-		this.articleService.terminerArticle(articleInClient, jwtUser.getId());
-		
-		System.out.println(articleInClient);
+		this.articleService.envoyerArticleAuClient(articleInClient, jwtUser.getId());
 	}
 	
 	@PostMapping(value="/computearticlestockagefromcolisarriver")

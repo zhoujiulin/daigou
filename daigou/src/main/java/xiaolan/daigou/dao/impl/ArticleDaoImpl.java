@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import xiaolan.daigou.dao.ArticleDao;
-import xiaolan.daigou.domain.entity.Article;
+import xiaolan.daigou.model.entity.Article;
 
 @Repository
 @Transactional

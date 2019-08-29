@@ -10,13 +10,9 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import xiaolan.daigou.common.enums.EnumStatusArticle;
-import xiaolan.daigou.common.enums.EnumStatusArticlePreparation;
-import xiaolan.daigou.common.enums.EnumStatusCommande;
-import xiaolan.daigou.common.enums.EnumStatusCommandeGroup;
-import xiaolan.daigou.common.enums.EnumTypeArticle;
-import xiaolan.daigou.common.enums.EnumTypeCommande;
 import xiaolan.daigou.common.utils.DaigouUtils;
 import xiaolan.daigou.dao.ArticleDao;
 import xiaolan.daigou.dao.BaseDao;
@@ -25,12 +21,19 @@ import xiaolan.daigou.dao.ColisDao;
 import xiaolan.daigou.dao.CommandeDao;
 import xiaolan.daigou.dao.StockageDao;
 import xiaolan.daigou.dao.UtilisateurDao;
-import xiaolan.daigou.domain.entity.Article;
-import xiaolan.daigou.domain.entity.ArticleStockage;
-import xiaolan.daigou.domain.entity.Client;
-import xiaolan.daigou.domain.entity.Colis;
-import xiaolan.daigou.domain.entity.Commande;
-import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.model.entity.Article;
+import xiaolan.daigou.model.entity.ArticleStockage;
+import xiaolan.daigou.model.entity.Client;
+import xiaolan.daigou.model.entity.Colis;
+import xiaolan.daigou.model.entity.Commande;
+import xiaolan.daigou.model.entity.Utilisateur;
+import xiaolan.daigou.model.enums.EnumStatusArticle;
+import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
+import xiaolan.daigou.model.enums.EnumStatusCommande;
+import xiaolan.daigou.model.enums.EnumStatusCommandeGroup;
+import xiaolan.daigou.model.enums.EnumTypeArticle;
+import xiaolan.daigou.model.enums.EnumTypeCommande;
+import xiaolan.daigou.model.exception.DaigouException;
 import xiaolan.daigou.service.CommandeService;
 
 @Service
@@ -59,6 +62,7 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
     }
 	
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public Commande createNewCommande(Commande commande, Long userId) {
 		Utilisateur utilisateur = utilisateurDao.findById(userId);
 		
@@ -91,12 +95,14 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
 	}
 
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public List<Commande> getCommandesByStatus(List<String> statusList, Long userId) {
 		List<Commande> commandes = this.commandeDao.getCommandesByStatus(statusList, userId);
 		return commandes;
 	}
 
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public Map<Integer, Map<String, String>> getCommandeStatus() {
 		Map<Integer, Map<String, String>> map = new HashMap<Integer, Map<String, String>>();
 		EnumStatusCommande[] statusList = EnumStatusCommande.values();
@@ -111,6 +117,7 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
 	}
 	
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public Map<String, String> getCommandeStatusGroup() {
 		Map<String, String> map = new HashMap<String, String>();
 		EnumStatusCommande[] statusList = EnumStatusCommande.values();
@@ -133,12 +140,14 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
 	}
 
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public void deleteCommandeById(Long id) {
 		this.computeCountStockageForDeleteCommande(id);
 		this.deleteById(id);
 	}
 	
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public Commande updateCommande(Commande commande) {
 		Set<Article> articles = this.computeStatusArticle(commande.getArticles());
 		commande.setArticles(articles);
@@ -191,22 +200,30 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
 			if(oldArticle != null) {
 				newCountFromStockageFrance = article.getCountArticleFromStockageFrance() - oldArticle.getCountArticleFromStockageFrance();
 			}
-			articleStockage.setCountStockageFranceReserve(articleStockage.getCountStockageFranceReserve() + newCountFromStockageFrance);
-			articleStockage.setCountStockageFranceAvailable(articleStockage.getCountStockageFranceAvailable() - newCountFromStockageFrance);
+			if(articleStockage != null) {
+				articleStockage.setCountStockageFranceReserve(articleStockage.getCountStockageFranceReserve() + newCountFromStockageFrance);
+				articleStockage.setCountStockageFranceAvailable(articleStockage.getCountStockageFranceAvailable() - newCountFromStockageFrance);
+			}
 			
 			// update stockage en route
 			int newCountFromStockageEnRoute = article.getCountArticleFromStockageEnRoute();
 			if(oldArticle != null) {
 				newCountFromStockageEnRoute = article.getCountArticleFromStockageEnRoute() - oldArticle.getCountArticleFromStockageEnRoute();
 			}
-			articleStockage.setCountStockageEnRouteAvailable(articleStockage.getCountStockageEnRouteAvailable() - newCountFromStockageEnRoute);
+			
+			if(articleStockage != null) {
+				articleStockage.setCountStockageEnRouteAvailable(articleStockage.getCountStockageEnRouteAvailable() - newCountFromStockageEnRoute);
+			}
 			
 			// update stockage chine
 			int newCountFromStockageChine = article.getCountArticleFromStockageChine();
 			if(oldArticle != null) {
 				newCountFromStockageChine = article.getCountArticleFromStockageChine() - oldArticle.getCountArticleFromStockageChine();
 			}
-			articleStockage.setCountStockageChineAvailable(articleStockage.getCountStockageChineAvailable() - newCountFromStockageChine);
+			
+			if(articleStockage != null) {
+				articleStockage.setCountStockageChineAvailable(articleStockage.getCountStockageChineAvailable() - newCountFromStockageChine);
+			}
 			
 			this.stockageDao.save(articleStockage);
 		}

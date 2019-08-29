@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import xiaolan.daigou.domain.dto.ClientDTO;
-import xiaolan.daigou.domain.entity.Client;
+import xiaolan.daigou.model.dto.ClientDTO;
+import xiaolan.daigou.model.entity.Client;
 import xiaolan.daigou.service.ClientService;
 import xiaolan.daigou.web.security.jwt.JwtUser;
 

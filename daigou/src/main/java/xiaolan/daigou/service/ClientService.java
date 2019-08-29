@@ -2,10 +2,10 @@ package xiaolan.daigou.service;
 
 import java.util.List;
 
-import xiaolan.daigou.domain.dto.ClientDTO;
-import xiaolan.daigou.domain.entity.Client;
-import xiaolan.daigou.domain.entity.Colis;
-import xiaolan.daigou.domain.entity.Commande;
+import xiaolan.daigou.model.dto.ClientDTO;
+import xiaolan.daigou.model.entity.Client;
+import xiaolan.daigou.model.entity.Colis;
+import xiaolan.daigou.model.entity.Commande;
 
 public interface ClientService extends AbstractService<Client>{
 

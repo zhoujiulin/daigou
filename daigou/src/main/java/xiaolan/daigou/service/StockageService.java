@@ -2,12 +2,14 @@ package xiaolan.daigou.service;
 
 import java.util.List;
 
-import xiaolan.daigou.domain.dto.ArticleDTO;
-import xiaolan.daigou.domain.entity.ArticleStockage;
+import xiaolan.daigou.model.dto.ArticleDTO;
+import xiaolan.daigou.model.entity.ArticleStockage;
 
 public interface StockageService extends AbstractService<ArticleStockage> {
 
 	List<ArticleStockage> getAllStockage(long userId);
+	
+	List<ArticleStockage> getAllStockageSelectable(long userId);
 	
 	ArticleStockage createArticleStockage(ArticleStockage articleStockage, long userId);
 	

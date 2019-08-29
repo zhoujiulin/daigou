@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import xiaolan.daigou.domain.dto.ColisDTO;
-import xiaolan.daigou.domain.entity.ArticleStockage;
+import xiaolan.daigou.model.dto.ColisDTO;
+import xiaolan.daigou.model.entity.ArticleStockage;
 import xiaolan.daigou.service.StockageService;
 import xiaolan.daigou.web.security.jwt.JwtUser;
 
@@ -33,6 +33,16 @@ public class StockageController {
 		List<ArticleStockage> stockageList = this.stockageService.getAllStockage(jwtUser.getId());
 		return stockageList;
 	}
+	
+	@GetMapping(value="/allstockageselectable")
+	public List<ArticleStockage> getAllStockageSelectable(Authentication authentication) {
+		
+		JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
+		
+		List<ArticleStockage> stockageList = this.stockageService.getAllStockageSelectable(jwtUser.getId());
+		return stockageList;
+	}
+	
 	
 	@PostMapping(value="/create")
 	@ResponseBody

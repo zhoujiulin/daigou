@@ -1,5 +1,8 @@
 package xiaolan.daigou.dao.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
@@ -7,9 +10,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import xiaolan.daigou.dao.StockageDao;
-import xiaolan.daigou.domain.entity.ArticleModel;
-import xiaolan.daigou.domain.entity.ArticleStockage;
-import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.model.entity.ArticleModel;
+import xiaolan.daigou.model.entity.ArticleStockage;
+import xiaolan.daigou.model.entity.Utilisateur;
 
 @Repository
 @Transactional
@@ -31,6 +34,19 @@ public class StockageDaoImpl  extends BaseDaoImpl<ArticleStockage> implements St
 			return (ArticleStockage) query.getSingleResult();
 		} catch (NoResultException e) {
             return null;
+        }
+	}
+
+	@Override
+	public List<ArticleStockage> getAllStockageSelectable(long idUser) {
+		try {
+	        String sql = " from ArticleStockage as a where a.countStockageFranceAvailable > 0 and a.utilisateur.idUser = ?";
+	        Query query = em.createQuery(sql, this.clazz);
+	        query.setParameter(0, idUser);
+	        
+			return query.getResultList();
+		} catch (NoResultException e) {
+            return new ArrayList<ArticleStockage>();
         }
 	}
 }

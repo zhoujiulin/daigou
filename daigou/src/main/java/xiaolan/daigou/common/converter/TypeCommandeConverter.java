@@ -3,7 +3,7 @@ package xiaolan.daigou.common.converter;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import xiaolan.daigou.common.enums.EnumTypeCommande;
+import xiaolan.daigou.model.enums.EnumTypeCommande;
 
 @Converter
 public class TypeCommandeConverter  implements AttributeConverter<EnumTypeCommande, Integer> {

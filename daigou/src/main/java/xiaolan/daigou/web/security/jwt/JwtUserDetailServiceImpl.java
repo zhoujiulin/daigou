@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.model.entity.Utilisateur;
 import xiaolan.daigou.service.UserService;
 
 @Service

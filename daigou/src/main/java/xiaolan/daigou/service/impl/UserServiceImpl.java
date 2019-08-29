@@ -5,12 +5,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import xiaolan.daigou.common.utils.PasswordUtil;
 import xiaolan.daigou.dao.UtilisateurDao;
-import xiaolan.daigou.domain.LoginUserForm;
-import xiaolan.daigou.domain.entity.Commande;
-import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.model.LoginUserForm;
+import xiaolan.daigou.model.entity.Commande;
+import xiaolan.daigou.model.entity.Utilisateur;
+import xiaolan.daigou.model.exception.DaigouException;
 import xiaolan.daigou.service.UserService;
 
 @Service
@@ -26,6 +29,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public void inscription(LoginUserForm user) {
 		Utilisateur utilisateur = new Utilisateur();
 		utilisateur.setUsername(user.getUsername());
@@ -35,11 +39,13 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public Utilisateur findByUsername(String username) {
 		return this.userDao.findByUsername(username);
 	}
 
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public Utilisateur inscription(Utilisateur utilisateur) {
 		String password = PasswordUtil.getPasswordHash(utilisateur.getPassword());
 		utilisateur.setPassword(password);
@@ -49,6 +55,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public List<Utilisateur> findAll() {
 		return this.userDao.getAll();
 	}

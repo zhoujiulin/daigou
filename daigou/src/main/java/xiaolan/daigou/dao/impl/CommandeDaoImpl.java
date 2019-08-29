@@ -7,9 +7,9 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import xiaolan.daigou.common.enums.EnumStatusCommande;
 import xiaolan.daigou.dao.CommandeDao;
-import xiaolan.daigou.domain.entity.Commande;
+import xiaolan.daigou.model.entity.Commande;
+import xiaolan.daigou.model.enums.EnumStatusCommande;
 
 @Repository
 @Transactional

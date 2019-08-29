@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.model.entity.Utilisateur;
 
 public class JwtUser implements UserDetails {
 

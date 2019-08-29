@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import xiaolan.daigou.dao.ClientDao;
-import xiaolan.daigou.domain.entity.Client;
+import xiaolan.daigou.model.entity.Client;
 
 @Repository
 @Transactional

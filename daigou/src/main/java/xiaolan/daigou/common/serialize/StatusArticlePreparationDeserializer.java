@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import xiaolan.daigou.common.enums.EnumStatusArticlePreparation;
+import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
 
 public class StatusArticlePreparationDeserializer extends JsonDeserializer<EnumStatusArticlePreparation> {
 

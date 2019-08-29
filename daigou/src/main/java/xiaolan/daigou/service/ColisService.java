@@ -2,11 +2,11 @@ package xiaolan.daigou.service;
 
 import java.util.List;
 
-import xiaolan.daigou.domain.dto.ArticleMapEnRoutesDTO;
-import xiaolan.daigou.domain.dto.ArticleStockageDTO;
-import xiaolan.daigou.domain.dto.ColisDTO;
-import xiaolan.daigou.domain.entity.Article;
-import xiaolan.daigou.domain.entity.Colis;
+import xiaolan.daigou.model.dto.ArticleMapEnRoutesDTO;
+import xiaolan.daigou.model.dto.ArticleStockageDTO;
+import xiaolan.daigou.model.dto.ColisDTO;
+import xiaolan.daigou.model.entity.Article;
+import xiaolan.daigou.model.entity.Colis;
 
 public interface ColisService extends AbstractService<Colis> {
 

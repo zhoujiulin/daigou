@@ -6,16 +6,18 @@ import java.util.List;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import xiaolan.daigou.common.utils.DozerUtils;
 import xiaolan.daigou.dao.BaseDao;
 import xiaolan.daigou.dao.ClientDao;
 import xiaolan.daigou.dao.CommandeDao;
-import xiaolan.daigou.domain.dto.ClientDTO;
-import xiaolan.daigou.domain.dto.CommandeDTO;
-import xiaolan.daigou.domain.entity.Client;
-import xiaolan.daigou.domain.entity.Colis;
-import xiaolan.daigou.domain.entity.Commande;
+import xiaolan.daigou.model.dto.ClientDTO;
+import xiaolan.daigou.model.dto.CommandeDTO;
+import xiaolan.daigou.model.entity.Client;
+import xiaolan.daigou.model.entity.Commande;
+import xiaolan.daigou.model.exception.DaigouException;
 import xiaolan.daigou.service.ClientService;
 
 @Service
@@ -35,6 +37,7 @@ public class ClientServiceImpl extends AbstractServiceImpl<Client> implements Cl
     }
 
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public List<ClientDTO> getClientHasCommandeEnCours(Long idUser) {
 		List<ClientDTO> clientDTOs = new ArrayList<ClientDTO>();
 		List<Client> clients = this.clientDao.getAll(idUser);
@@ -52,6 +55,7 @@ public class ClientServiceImpl extends AbstractServiceImpl<Client> implements Cl
 	}
 	
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public List<Commande> getCommandeByClient(Long idClient, Long idUser) {
 		return this.commandeDao.getCommandeByClient(idClient, idUser);
 	}

@@ -1,6 +1,6 @@
 package xiaolan.daigou.dao;
 
-import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.model.entity.Utilisateur;
 
 public interface UtilisateurDao extends BaseDao<Utilisateur> {
 	

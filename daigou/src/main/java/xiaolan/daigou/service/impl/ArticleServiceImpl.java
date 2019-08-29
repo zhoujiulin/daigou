@@ -8,17 +8,20 @@ import java.util.Map;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import xiaolan.daigou.common.enums.EnumTypeArticle;
 import xiaolan.daigou.common.utils.DozerUtils;
 import xiaolan.daigou.dao.ArticleDao;
 import xiaolan.daigou.dao.BaseDao;
-import xiaolan.daigou.dao.CommandeDao;
-import xiaolan.daigou.domain.dto.ArticleDTO;
-import xiaolan.daigou.domain.dto.ArticleInClientDTO;
-import xiaolan.daigou.domain.dto.ColisDTO;
-import xiaolan.daigou.domain.entity.Article;
-import xiaolan.daigou.domain.entity.ArticleStockage;
+import xiaolan.daigou.model.dto.ArticleDTO;
+import xiaolan.daigou.model.dto.ArticleInClientDTO;
+import xiaolan.daigou.model.dto.ColisDTO;
+import xiaolan.daigou.model.entity.Article;
+import xiaolan.daigou.model.entity.ArticleStockage;
+import xiaolan.daigou.model.enums.EnumStatusArticle;
+import xiaolan.daigou.model.enums.EnumTypeArticle;
+import xiaolan.daigou.model.exception.DaigouException;
 import xiaolan.daigou.service.ArticleService;
 import xiaolan.daigou.service.StockageService;
 
@@ -32,9 +35,6 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 	@Autowired
 	private ArticleDao articleDao;
 	
-	@Autowired
-	private StockageService stockageService;
-	
     @Autowired
     protected Mapper dozerMapper;
 	
@@ -44,17 +44,22 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 	}
 
 	@Override
-	public void terminerArticle(ArticleInClientDTO articleInClientDTO, Long idUser) {
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
+	public void envoyerArticleAuClient(ArticleInClientDTO articleInClientDTO, Long idUser) {
 		Long idArticle = articleInClientDTO.getIdArticle();
-		//Article article = this.findById(idArticle);
-		if(articleInClientDTO.getCountArticleFromStockageChine() > 0) {
-			ArticleStockage articleStockage = stockageService.findByNameArticleStockage(articleInClientDTO.getNameArticle(), idUser);
-			articleStockage.setCountStockageChine(articleStockage.getCountStockageChine() - articleInClientDTO.getCountArticleFromStockageChine());
-			
+		Article article = this.findById(idArticle);
+		//article.setStatusArticle(EnumStatusArticle.ARTICLE_ENVOYE_AU_CLIENT);
+		if(articleInClientDTO.getCountArticleAchete() > 0) {
+			article.setCountArticleAcheteDistribue(article.getCountArticleAcheteDistribue() + articleInClientDTO.getCountArticleAchete());
+			this.articleDao.save(article);
+		} else if(articleInClientDTO.getCountArticleFromStockageChine() > 0) {
+			article.setCountArticleFromStockageChineDistribue(article.getCountArticleFromStockageChineDistribue() + articleInClientDTO.getCountArticleFromStockageChine());
+			this.articleDao.save(article);
 		}
 	}
 
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public Map<Long, List<ArticleDTO>> computeArticleStockageFromColiAarriver(ColisDTO colisDTO, Long idUser) {
 		Map<Long, List<ArticleDTO>> result = new HashMap<Long, List<ArticleDTO>>();
 

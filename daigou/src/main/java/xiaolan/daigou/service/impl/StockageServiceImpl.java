@@ -4,13 +4,16 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import xiaolan.daigou.dao.BaseDao;
 import xiaolan.daigou.dao.StockageDao;
 import xiaolan.daigou.dao.UtilisateurDao;
-import xiaolan.daigou.domain.dto.ArticleDTO;
-import xiaolan.daigou.domain.entity.ArticleStockage;
-import xiaolan.daigou.domain.entity.Utilisateur;
+import xiaolan.daigou.model.dto.ArticleDTO;
+import xiaolan.daigou.model.entity.ArticleStockage;
+import xiaolan.daigou.model.entity.Utilisateur;
+import xiaolan.daigou.model.exception.DaigouException;
 import xiaolan.daigou.service.StockageService;
 
 @Service
@@ -27,11 +30,19 @@ public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> im
     }
 	
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public List<ArticleStockage> getAllStockage(long userId){
 		return this.stockageDao.getAll(userId);
 	}
 	
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
+	public List<ArticleStockage> getAllStockageSelectable(long userId){
+		return this.stockageDao.getAll(userId);
+	}
+	
+	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public ArticleStockage createArticleStockage(ArticleStockage articleStockage, long userId){
 		Utilisateur utilisateur = utilisateurDao.findById(userId);
 		articleStockage.setUtilisateur(utilisateur);
@@ -56,17 +67,13 @@ public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> im
 	}
 
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public ArticleStockage saveArticleStokage(ArticleStockage articleStockage) {
 		return this.stockageDao.save(articleStockage);
 	}
 
 	@Override
-	public BaseDao<ArticleStockage> getDao() {
-		return this.stockageDao;
-	}
-	
-
-	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public void updateArticleStockageForDeleteArticle(ArticleDTO articleDTO, Long idUser) {
 		ArticleStockage articleStockage = this.findByNameArticleStockage(articleDTO.getNameArticle(), idUser);
 		articleStockage.setCountStockageFranceAvailable(articleStockage.getCountStockageFranceAvailable() + articleDTO.getCount());
@@ -75,7 +82,13 @@ public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> im
 	}
 
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public ArticleStockage findByNameArticleStockage(String nameArticleStockage, long idUser) {
 		return this.stockageDao.findByNameArticleStockage(nameArticleStockage, idUser);
+	}
+	
+	@Override
+	public BaseDao<ArticleStockage> getDao() {
+		return this.stockageDao;
 	}
 }

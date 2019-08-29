@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import xiaolan.daigou.dao.ArticleModelDao;
-import xiaolan.daigou.domain.entity.ArticleModel;
+import xiaolan.daigou.model.entity.ArticleModel;
 
 @Repository
 @Transactional
