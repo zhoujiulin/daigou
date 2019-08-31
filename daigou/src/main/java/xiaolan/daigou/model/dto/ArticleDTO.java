@@ -2,15 +2,16 @@ package xiaolan.daigou.model.dto;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Convert;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import xiaolan.daigou.common.converter.StatusArticleConverter;
+import xiaolan.daigou.common.converter.StatusArticleDistribueConverter;
 import xiaolan.daigou.common.converter.StatusArticlePreparationConverter;
 import xiaolan.daigou.common.converter.TypeArticleConverter;
 import xiaolan.daigou.model.enums.EnumStatusArticle;
+import xiaolan.daigou.model.enums.EnumStatusArticleDistribue;
 import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
 import xiaolan.daigou.model.enums.EnumTypeArticle;
 
@@ -43,6 +44,9 @@ public class ArticleDTO {
 
 	@Convert(converter = StatusArticleConverter.class)
 	private EnumStatusArticle statusArticle;
+	
+	@Convert(converter = StatusArticleDistribueConverter.class)
+	private EnumStatusArticleDistribue statusArticleDistribue;
 	
 	@Convert(converter = TypeArticleConverter.class)
 	private EnumTypeArticle typeArticle;
@@ -169,6 +173,14 @@ public class ArticleDTO {
 
 	public void setStatusArticle(EnumStatusArticle statusArticle) {
 		this.statusArticle = statusArticle;
+	}
+	
+	public EnumStatusArticleDistribue getStatusArticleDistribue() {
+		return statusArticleDistribue;
+	}
+
+	public void setStatusArticleDistribue(EnumStatusArticleDistribue statusArticleDistribue) {
+		this.statusArticleDistribue = statusArticleDistribue;
 	}
 
 	public EnumTypeArticle getTypeArticle() {

@@ -10,7 +10,7 @@ import xiaolan.daigou.model.entity.Article;
 
 public interface ArticleService extends AbstractService<Article>{
 	
-	void envoyerArticleAuClient(ArticleInClientDTO articleInClientDTO, Long idUser);
+	Article envoyerArticleAuClient(ArticleInClientDTO articleInClientDTO, Long idUser);
 	
 	Map<Long, List<ArticleDTO>> computeArticleStockageFromColiAarriver(ColisDTO colisDTO, Long idUser);
 	

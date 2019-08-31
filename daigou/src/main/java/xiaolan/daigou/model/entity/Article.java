@@ -18,9 +18,11 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import xiaolan.daigou.common.converter.StatusArticleConverter;
+import xiaolan.daigou.common.converter.StatusArticleDistribueConverter;
 import xiaolan.daigou.common.converter.StatusArticlePreparationConverter;
 import xiaolan.daigou.common.converter.TypeArticleConverter;
 import xiaolan.daigou.model.enums.EnumStatusArticle;
+import xiaolan.daigou.model.enums.EnumStatusArticleDistribue;
 import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
 import xiaolan.daigou.model.enums.EnumTypeArticle;
 
@@ -73,6 +75,10 @@ public class Article implements Serializable{
 	@Column(name="status_article")
 	@Convert(converter = StatusArticleConverter.class)
 	private EnumStatusArticle statusArticle;
+	
+	@Column(name="status_article_distribue")
+	@Convert(converter = StatusArticleDistribueConverter.class)
+	private EnumStatusArticleDistribue statusArticleDistribue;
 	
 	@Column(name="type_article")
 	@Convert(converter = TypeArticleConverter.class)
@@ -189,6 +195,14 @@ public class Article implements Serializable{
 
 	public void setStatusArticle(EnumStatusArticle statusArticle) {
 		this.statusArticle = statusArticle;
+	}
+	
+	public EnumStatusArticleDistribue getStatusArticleDistribue() {
+		return statusArticleDistribue;
+	}
+
+	public void setStatusArticleDistribue(EnumStatusArticleDistribue statusArticleDistribue) {
+		this.statusArticleDistribue = statusArticleDistribue;
 	}
 
 	public EnumTypeArticle getTypeArticle() {

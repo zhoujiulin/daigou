@@ -18,12 +18,10 @@ import xiaolan.daigou.model.dto.ArticleDTO;
 import xiaolan.daigou.model.dto.ArticleInClientDTO;
 import xiaolan.daigou.model.dto.ColisDTO;
 import xiaolan.daigou.model.entity.Article;
-import xiaolan.daigou.model.entity.ArticleStockage;
-import xiaolan.daigou.model.enums.EnumStatusArticle;
+import xiaolan.daigou.model.enums.EnumStatusArticleDistribue;
 import xiaolan.daigou.model.enums.EnumTypeArticle;
 import xiaolan.daigou.model.exception.DaigouException;
 import xiaolan.daigou.service.ArticleService;
-import xiaolan.daigou.service.StockageService;
 
 @Service
 public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements ArticleService{
@@ -45,17 +43,21 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 
 	@Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
-	public void envoyerArticleAuClient(ArticleInClientDTO articleInClientDTO, Long idUser) {
+	public Article envoyerArticleAuClient(ArticleInClientDTO articleInClientDTO, Long idUser) {
 		Long idArticle = articleInClientDTO.getIdArticle();
 		Article article = this.findById(idArticle);
-		//article.setStatusArticle(EnumStatusArticle.ARTICLE_ENVOYE_AU_CLIENT);
+		
 		if(articleInClientDTO.getCountArticleAchete() > 0) {
+			article.setStatusArticleDistribue(EnumStatusArticleDistribue.ARTICLE_ACHETE_DISTRIBUE);
 			article.setCountArticleAcheteDistribue(article.getCountArticleAcheteDistribue() + articleInClientDTO.getCountArticleAchete());
-			this.articleDao.save(article);
+			article = this.articleDao.save(article);
 		} else if(articleInClientDTO.getCountArticleFromStockageChine() > 0) {
+			article.setStatusArticleDistribue(EnumStatusArticleDistribue.ARTICLE_FROM_STOCKAG_CHINE_DISTRIBUE);
 			article.setCountArticleFromStockageChineDistribue(article.getCountArticleFromStockageChineDistribue() + articleInClientDTO.getCountArticleFromStockageChine());
-			this.articleDao.save(article);
+			article = this.articleDao.save(article);
 		}
+		
+		return article;
 	}
 
 	@Override

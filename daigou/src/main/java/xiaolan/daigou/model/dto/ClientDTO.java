@@ -3,7 +3,6 @@ package xiaolan.daigou.model.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import xiaolan.daigou.model.entity.Commande;
 import xiaolan.daigou.model.entity.Utilisateur;
 
 public class ClientDTO {

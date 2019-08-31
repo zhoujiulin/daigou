@@ -93,7 +93,6 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 	public Colis envoyerColis(Colis colis) {
 		for(Article article : colis.getArticles()) {
 			article.setColis(colis);
-			article.setDateEnvoie(new Date());
 		}
 		this.computeCommandePourEnvoyerColis(colis);
 		
@@ -195,6 +194,9 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 		for(Article article : colis.getArticles()) {
 			if(article.getTypeArticle() == EnumTypeArticle.ARTICLE_CLIENT) {
 				Commande commande = this.commandeDao.findById(article.getCommande().getId());
+				for(Article a : commande.getArticles()) {
+					a.setDateEnvoie(new Date());
+				}
 				
 				if(!fullSendCommandes.contains(commande) && !partSendCommande.contains(commande)) {
 					boolean isFullSend = isFullSendCommandes(commande, article, colis);
