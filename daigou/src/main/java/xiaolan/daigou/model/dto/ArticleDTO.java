@@ -2,17 +2,20 @@ package xiaolan.daigou.model.dto;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Convert;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import xiaolan.daigou.common.converter.StatusArticleConverter;
-import xiaolan.daigou.common.converter.StatusArticleDistribueConverter;
+import xiaolan.daigou.common.converter.StatusArticleAcheteDistribueConverter;
 import xiaolan.daigou.common.converter.StatusArticlePreparationConverter;
+import xiaolan.daigou.common.converter.StatusArticleStockageChineDistribueConverter;
 import xiaolan.daigou.common.converter.TypeArticleConverter;
 import xiaolan.daigou.model.enums.EnumStatusArticle;
-import xiaolan.daigou.model.enums.EnumStatusArticleDistribue;
+import xiaolan.daigou.model.enums.EnumStatusArticleAcheteDistribue;
 import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
+import xiaolan.daigou.model.enums.EnumStatusArticleStockageChineDistribue;
 import xiaolan.daigou.model.enums.EnumTypeArticle;
 
 public class ArticleDTO {
@@ -45,8 +48,13 @@ public class ArticleDTO {
 	@Convert(converter = StatusArticleConverter.class)
 	private EnumStatusArticle statusArticle;
 	
-	@Convert(converter = StatusArticleDistribueConverter.class)
-	private EnumStatusArticleDistribue statusArticleDistribue;
+	@Column(name="status_article_achete_distribue")
+	@Convert(converter = StatusArticleAcheteDistribueConverter.class)
+	private EnumStatusArticleAcheteDistribue statusArticleAcheteDistribue;
+	
+	@Column(name="status_article_stockage_chine_distribue")
+	@Convert(converter = StatusArticleStockageChineDistribueConverter.class)
+	private EnumStatusArticleStockageChineDistribue statusArticleStockageChineDistribue;
 	
 	@Convert(converter = TypeArticleConverter.class)
 	private EnumTypeArticle typeArticle;
@@ -175,12 +183,21 @@ public class ArticleDTO {
 		this.statusArticle = statusArticle;
 	}
 	
-	public EnumStatusArticleDistribue getStatusArticleDistribue() {
-		return statusArticleDistribue;
+	public EnumStatusArticleAcheteDistribue getStatusArticleAcheteDistribue() {
+		return statusArticleAcheteDistribue;
 	}
 
-	public void setStatusArticleDistribue(EnumStatusArticleDistribue statusArticleDistribue) {
-		this.statusArticleDistribue = statusArticleDistribue;
+	public void setStatusArticleAcheteDistribue(EnumStatusArticleAcheteDistribue statusArticleAcheteDistribue) {
+		this.statusArticleAcheteDistribue = statusArticleAcheteDistribue;
+	}
+
+	public EnumStatusArticleStockageChineDistribue getStatusArticleStockageChineDistribue() {
+		return statusArticleStockageChineDistribue;
+	}
+
+	public void setStatusArticleStockageChineDistribue(
+			EnumStatusArticleStockageChineDistribue statusArticleStockageChineDistribue) {
+		this.statusArticleStockageChineDistribue = statusArticleStockageChineDistribue;
 	}
 
 	public EnumTypeArticle getTypeArticle() {

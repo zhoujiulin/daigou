@@ -9,12 +9,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import xiaolan.daigou.model.enums.EnumStatusArticleDistribue;
+import xiaolan.daigou.model.enums.EnumStatusArticleAcheteDistribue;
 
-public class StatusArticleDistribueDeserializer extends JsonDeserializer<EnumStatusArticleDistribue> {
+public class StatusArticleAcheteDistribueDeserializer extends JsonDeserializer<EnumStatusArticleAcheteDistribue> {
 
 	@Override
-	public EnumStatusArticleDistribue deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
+	public EnumStatusArticleAcheteDistribue deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
 			throws IOException, JsonProcessingException {
 		
 		ObjectCodec oc = jsonParser.getCodec();
@@ -30,7 +30,7 @@ public class StatusArticleDistribueDeserializer extends JsonDeserializer<EnumSta
         }
         
         int index = Integer.valueOf(nodeIndex.toString());
-        for(EnumStatusArticleDistribue status : EnumStatusArticleDistribue.values()) {
+        for(EnumStatusArticleAcheteDistribue status : EnumStatusArticleAcheteDistribue.values()) {
         	if(index == status.getIndex()) {
         		return status;
         	}

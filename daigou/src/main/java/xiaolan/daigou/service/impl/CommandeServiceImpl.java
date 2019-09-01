@@ -28,7 +28,9 @@ import xiaolan.daigou.model.entity.Colis;
 import xiaolan.daigou.model.entity.Commande;
 import xiaolan.daigou.model.entity.Utilisateur;
 import xiaolan.daigou.model.enums.EnumStatusArticle;
+import xiaolan.daigou.model.enums.EnumStatusArticleAcheteDistribue;
 import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
+import xiaolan.daigou.model.enums.EnumStatusArticleStockageChineDistribue;
 import xiaolan.daigou.model.enums.EnumStatusCommande;
 import xiaolan.daigou.model.enums.EnumStatusCommandeGroup;
 import xiaolan.daigou.model.enums.EnumTypeArticle;
@@ -53,9 +55,6 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
 	
 	@Autowired
 	private ColisDao colisDao;
-	
-	@Autowired
-	private ArticleDao articleDao;
 
     public CommandeServiceImpl() {
         super(Commande.class);
@@ -169,6 +168,32 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
 		}
 		this.computeCountStockageForUpdateCommande(commande);
 		return this.commandeDao.save(commande);
+	}
+	
+
+	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
+	public void terminerCommande(Long idCommande) {
+		boolean isTermine = true;
+		
+		Commande commande = this.commandeDao.findById(idCommande);
+		for(Article article : commande.getArticles()) {
+			if(article.getCountArticleAchete() > 0 && article.getStatusArticleAcheteDistribue() != EnumStatusArticleAcheteDistribue.ARTICLE_ACHETE_DISTRIBUE) {
+				isTermine = false;
+			}
+			if(article.getCountArticleFromStockageFrance() > 0 && article.getStatusArticleStockageChineDistribue() != EnumStatusArticleStockageChineDistribue.ARTICLE_FROM_STOCKAG_CHINE_DISTRIBUE) {
+				isTermine = false;
+			}
+		}
+		
+		if(isTermine) {
+			commande.setStatus(EnumStatusCommande.TERMINE);
+			for(Article article : commande.getArticles()) {
+				article.setStatusArticle(EnumStatusArticle.ARTICLE_TERMINE);
+				article.setDateTermine(new Date());
+			}
+			this.commandeDao.save(commande);
+		}
 	}
 	
 	private void computeCountStockageForDeleteCommande(Long idCommande) {

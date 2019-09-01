@@ -1,5 +1,6 @@
 package xiaolan.daigou.service.impl;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +19,8 @@ import xiaolan.daigou.model.dto.ArticleDTO;
 import xiaolan.daigou.model.dto.ArticleInClientDTO;
 import xiaolan.daigou.model.dto.ColisDTO;
 import xiaolan.daigou.model.entity.Article;
-import xiaolan.daigou.model.enums.EnumStatusArticleDistribue;
+import xiaolan.daigou.model.enums.EnumStatusArticleAcheteDistribue;
+import xiaolan.daigou.model.enums.EnumStatusArticleStockageChineDistribue;
 import xiaolan.daigou.model.enums.EnumTypeArticle;
 import xiaolan.daigou.model.exception.DaigouException;
 import xiaolan.daigou.service.ArticleService;
@@ -46,13 +48,14 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 	public Article envoyerArticleAuClient(ArticleInClientDTO articleInClientDTO, Long idUser) {
 		Long idArticle = articleInClientDTO.getIdArticle();
 		Article article = this.findById(idArticle);
+		article.setDateDistribution(new Date());
 		
 		if(articleInClientDTO.getCountArticleAchete() > 0) {
-			article.setStatusArticleDistribue(EnumStatusArticleDistribue.ARTICLE_ACHETE_DISTRIBUE);
+			article.setStatusArticleAcheteDistribue(EnumStatusArticleAcheteDistribue.ARTICLE_ACHETE_DISTRIBUE);
 			article.setCountArticleAcheteDistribue(article.getCountArticleAcheteDistribue() + articleInClientDTO.getCountArticleAchete());
 			article = this.articleDao.save(article);
 		} else if(articleInClientDTO.getCountArticleFromStockageChine() > 0) {
-			article.setStatusArticleDistribue(EnumStatusArticleDistribue.ARTICLE_FROM_STOCKAG_CHINE_DISTRIBUE);
+			article.setStatusArticleStockageChineDistribue(EnumStatusArticleStockageChineDistribue.ARTICLE_FROM_STOCKAG_CHINE_DISTRIBUE);
 			article.setCountArticleFromStockageChineDistribue(article.getCountArticleFromStockageChineDistribue() + articleInClientDTO.getCountArticleFromStockageChine());
 			article = this.articleDao.save(article);
 		}
