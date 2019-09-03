@@ -1,7 +1,5 @@
 package xiaolan.daigou.web.controller;
 
-import java.security.Principal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,9 +7,6 @@ import java.util.Map;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import xiaolan.daigou.model.dto.CommandeDTO;
 import xiaolan.daigou.model.entity.Commande;
-import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
-import xiaolan.daigou.model.enums.EnumStatusCommande;
-import xiaolan.daigou.model.enums.EnumStatusCommandeGroup;
 import xiaolan.daigou.model.enums.EnumTypeCommande;
 import xiaolan.daigou.service.CommandeService;
 import xiaolan.daigou.web.security.jwt.JwtUser;

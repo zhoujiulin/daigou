@@ -3,9 +3,9 @@ package xiaolan.daigou.model.enums;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import xiaolan.daigou.common.serialize.StatusArticleAcheteDistribueDeserializer;
+import xiaolan.daigou.common.serialize.StatusArticleStockageChineDistribueDeserializer;
 
-@JsonDeserialize(using = StatusArticleAcheteDistribueDeserializer.class)
+@JsonDeserialize(using = StatusArticleStockageChineDistribueDeserializer.class)
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum EnumStatusArticleStockageChineDistribue {
 	ARTICLE_FROM_STOCKAG_CHINE_NON_DISTRIBUE(1, "enum.article.statusDistribue.articleFromStockageChineNonDistribue", DaigouConstant.CSS_ORANGE),

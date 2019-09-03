@@ -194,10 +194,6 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 		for(Article article : colis.getArticles()) {
 			if(article.getTypeArticle() == EnumTypeArticle.ARTICLE_CLIENT) {
 				Commande commande = this.commandeDao.findById(article.getCommande().getId());
-				for(Article a : commande.getArticles()) {
-					a.setDateEnvoie(new Date());
-				}
-				
 				if(!fullSendCommandes.contains(commande) && !partSendCommande.contains(commande)) {
 					boolean isFullSend = isFullSendCommandes(commande, article, colis);
 					if(isFullSend) {
@@ -264,6 +260,10 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 						newArticle.setIdArticle(null);
 						newArticle.setCount(newArticle.getCountArticleAchete());
 						newArticle.setStatusArticlePreparation(EnumStatusArticlePreparation.PREPARE_TOUT);
+						if(isEnvoyer) {
+							newArticle.setDateEnvoie(new Date());
+							newArticle.setStatusArticle(EnumStatusArticle.ARTICLE_ENVOYE_SUR_LA_ROUTE);
+						}
 						
 						int newCount = article.getCount() - article.getCountArticleAchete();
 						for(Article ar : commande.getArticles()) {
@@ -281,6 +281,10 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 						}
 						newCommande.getArticles().add(newArticle);
 					}else {
+						if(isEnvoyer) {
+							article.setDateEnvoie(new Date());
+							article.setStatusArticle(EnumStatusArticle.ARTICLE_ENVOYE_SUR_LA_ROUTE);
+						}
 						newCommande.getArticles().add(article);
 						//remove ancien article
 						it.remove();
@@ -319,6 +323,10 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 						newArticle.setCountArticleFromStockageFrance(newArticle.getCountArticleFromStockageFrance());
 						newArticle.setStatusArticlePreparation(EnumStatusArticlePreparation.PREPARE_TOUT);
 						newArticle.setCommande(newCommande);
+						if(isEnvoyer) {
+							newArticle.setDateEnvoie(new Date());
+							newArticle.setStatusArticle(EnumStatusArticle.ARTICLE_ENVOYE_SUR_LA_ROUTE);
+						}
 						
 						int newCount = article.getCount() - article.getCountArticleAchete();
 						for(Article ar : commande.getArticles()) {
@@ -340,6 +348,10 @@ public class ColisServiceImpl extends AbstractServiceImpl<Colis> implements Coli
 						Article newArticle = (Article) DaigouUtils.cloneObject(article);
 						newArticle.setCommande(newCommande);
 						newArticle.setIdArticle(null);
+						if(isEnvoyer) {
+							newArticle.setDateEnvoie(new Date());
+							newArticle.setStatusArticle(EnumStatusArticle.ARTICLE_ENVOYE_SUR_LA_ROUTE);
+						}
 						newCommande.getArticles().add(newArticle);
 						
 						article.setCommande(null);

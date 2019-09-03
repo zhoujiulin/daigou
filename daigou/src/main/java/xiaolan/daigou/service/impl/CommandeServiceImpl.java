@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import xiaolan.daigou.common.utils.DaigouUtils;
-import xiaolan.daigou.dao.ArticleDao;
 import xiaolan.daigou.dao.BaseDao;
 import xiaolan.daigou.dao.ClientDao;
 import xiaolan.daigou.dao.ColisDao;
@@ -29,7 +28,6 @@ import xiaolan.daigou.model.entity.Commande;
 import xiaolan.daigou.model.entity.Utilisateur;
 import xiaolan.daigou.model.enums.EnumStatusArticle;
 import xiaolan.daigou.model.enums.EnumStatusArticleAcheteDistribue;
-import xiaolan.daigou.model.enums.EnumStatusArticlePreparation;
 import xiaolan.daigou.model.enums.EnumStatusArticleStockageChineDistribue;
 import xiaolan.daigou.model.enums.EnumStatusCommande;
 import xiaolan.daigou.model.enums.EnumStatusCommandeGroup;
@@ -107,10 +105,12 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
 		EnumStatusCommande[] statusList = EnumStatusCommande.values();
 		
 		for(EnumStatusCommande status : statusList) {
-			Map<String, String> valueMap = new HashMap<String, String>();
-			valueMap.put(status.getValue(), status.getColor());
-			
-			map.put(status.getIndex(), valueMap);
+			if(status != EnumStatusCommande.TERMINE) {
+				Map<String, String> valueMap = new HashMap<String, String>();
+				valueMap.put(status.getValue(), status.getColor());
+				
+				map.put(status.getIndex(), valueMap);
+			}
 		}
 		return map;
 	}
@@ -123,17 +123,19 @@ public class CommandeServiceImpl extends AbstractServiceImpl<Commande> implement
 
 		EnumStatusCommandeGroup[] statusGroupList = EnumStatusCommandeGroup.values();
 		for(EnumStatusCommandeGroup group : statusGroupList) {
-			StringBuilder sb = new StringBuilder();
-			
-			for(EnumStatusCommande status : statusList) {
-				if(status.isInGroup(group)) {
-					sb.append(status.getIndex());
-					sb.append(",");
+			if(group != EnumStatusCommandeGroup.COMMANDE_TERMINEE) {
+				StringBuilder sb = new StringBuilder();
+				
+				for(EnumStatusCommande status : statusList) {
+					if(status.isInGroup(group)) {
+						sb.append(status.getIndex());
+						sb.append(",");
+					}
 				}
+				
+				String text = sb.toString().substring(0, sb.length() - 1);
+				map.put(text, group.getValue());
 			}
-			
-			String text = sb.toString().substring(0, sb.length() - 1);
-			map.put(text, group.getValue());
 		}
 		return map;
 	}

@@ -55,9 +55,13 @@ public class CommandeDaoImpl extends BaseDaoImpl<Commande> implements CommandeDa
 	}
 
 	@Override
-	public List<Commande> getCommandeByClient(Long idClient, Long idUser) {
+	public List<Commande> getCommandeByClient(Long idClient, Long idUser, boolean isCommandeTermineInclus) {
 		StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append(" from Commande as c where c.client.id = ? and c.utilisateur.idUser = ?");
+        
+        if(isCommandeTermineInclus) {
+        	queryBuilder.append(" and c.status != " + EnumStatusCommande.TERMINE.getIndex());
+        }
 		
 		Query query = em.createQuery(queryBuilder.toString(), this.clazz);
 	    query.setParameter(0, idClient);

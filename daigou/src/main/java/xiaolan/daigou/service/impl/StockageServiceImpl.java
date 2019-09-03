@@ -1,7 +1,9 @@
 package xiaolan.daigou.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -11,6 +13,7 @@ import xiaolan.daigou.dao.BaseDao;
 import xiaolan.daigou.dao.StockageDao;
 import xiaolan.daigou.dao.UtilisateurDao;
 import xiaolan.daigou.model.dto.ArticleDTO;
+import xiaolan.daigou.model.dto.ArticleStockageDTO;
 import xiaolan.daigou.model.entity.ArticleStockage;
 import xiaolan.daigou.model.entity.Utilisateur;
 import xiaolan.daigou.model.exception.DaigouException;
@@ -24,6 +27,9 @@ public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> im
 	
 	@Autowired
 	private UtilisateurDao utilisateurDao;
+	
+	@Autowired
+    protected Mapper dozerMapper;
 	
     public StockageServiceImpl() {
         super(ArticleStockage.class);
@@ -70,6 +76,20 @@ public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> im
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
 	public ArticleStockage saveArticleStokage(ArticleStockage articleStockage) {
 		return this.stockageDao.save(articleStockage);
+	}
+	
+
+	@Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
+	public List<ArticleStockageDTO> saveReinitStockage(List<ArticleStockageDTO> articleStockages) {
+		List<ArticleStockageDTO> result = new ArrayList<ArticleStockageDTO>();
+		for(ArticleStockageDTO articleStockageDTO : articleStockages) {
+			ArticleStockage articleStockage = dozerMapper.map(articleStockageDTO, ArticleStockage.class);
+			articleStockage = this.stockageDao.save(articleStockage);
+			result.add(dozerMapper.map(articleStockage, ArticleStockageDTO.class));
+		}
+
+		return result;
 	}
 
 	@Override

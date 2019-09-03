@@ -14,5 +14,5 @@ public interface CommandeDao extends BaseDao<Commande>{
 	
 	List<Commande> getCommandesByStatus(List<String> statusList, Long userId);
 	
-	List<Commande> getCommandeByClient(Long idClient, Long idUser);
+	List<Commande> getCommandeByClient(Long idClient, Long idUser, boolean isCommandeTermineInclus);
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import xiaolan.daigou.model.dto.ArticleStockageDTO;
 import xiaolan.daigou.model.dto.ColisDTO;
 import xiaolan.daigou.model.entity.ArticleStockage;
 import xiaolan.daigou.service.StockageService;
@@ -59,6 +60,14 @@ public class StockageController {
 	public ArticleStockage saveArticleStokage(@RequestBody ArticleStockage articleStockage, Authentication authentication) {
 		
 		ArticleStockage result = this.stockageService.saveArticleStokage(articleStockage);
+		return result;
+	}
+	
+	@PostMapping(value="/savereinitstockage")
+	@ResponseBody
+	public List<ArticleStockageDTO> saveReinitStockage(@RequestBody List<ArticleStockageDTO> stockages, Authentication authentication) {
+		
+		List<ArticleStockageDTO> result = this.stockageService.saveReinitStockage(stockages);
 		return result;
 	}
 	

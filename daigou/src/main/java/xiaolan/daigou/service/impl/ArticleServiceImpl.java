@@ -1,6 +1,6 @@
 package xiaolan.daigou.service.impl;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +24,7 @@ import xiaolan.daigou.model.enums.EnumStatusArticleStockageChineDistribue;
 import xiaolan.daigou.model.enums.EnumTypeArticle;
 import xiaolan.daigou.model.exception.DaigouException;
 import xiaolan.daigou.service.ArticleService;
+import xiaolan.daigou.service.CommandeService;
 
 @Service
 public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements ArticleService{
@@ -31,6 +32,9 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
     public ArticleServiceImpl() {
         super(Article.class);
     }
+    
+	@Autowired
+	private CommandeService commandeService;
 	
 	@Autowired
 	private ArticleDao articleDao;
@@ -60,6 +64,7 @@ public class ArticleServiceImpl extends AbstractServiceImpl<Article> implements 
 			article = this.articleDao.save(article);
 		}
 		
+		this.commandeService.terminerCommande(article.getCommande().getId());
 		return article;
 	}
 

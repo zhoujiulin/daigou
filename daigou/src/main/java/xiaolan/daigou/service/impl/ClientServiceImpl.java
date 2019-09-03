@@ -43,7 +43,7 @@ public class ClientServiceImpl extends AbstractServiceImpl<Client> implements Cl
 		List<Client> clients = this.clientDao.getAll(idUser);
 		
 		for(Client client : clients) {
-			List<Commande> commandes = this.getCommandeByClient(client.getId(), idUser);
+			List<Commande> commandes = this.getCommandeByClient(client.getId(), idUser, true);
 			List<CommandeDTO> commandeDTOs = DozerUtils.mapList(dozerMapper, commandes, CommandeDTO.class);
 			
 			ClientDTO clientDTO = dozerMapper.map(client, ClientDTO.class);
@@ -56,8 +56,8 @@ public class ClientServiceImpl extends AbstractServiceImpl<Client> implements Cl
 	
 	@Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
-	public List<Commande> getCommandeByClient(Long idClient, Long idUser) {
-		return this.commandeDao.getCommandeByClient(idClient, idUser);
+	public List<Commande> getCommandeByClient(Long idClient, Long idUser, boolean isCommandeTermineInclus) {
+		return this.commandeDao.getCommandeByClient(idClient, idUser, isCommandeTermineInclus);
 	}
 
 	@Override
