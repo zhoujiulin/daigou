@@ -37,8 +37,8 @@ public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> im
 	
 	@Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
-	public List<ArticleStockage> getAllStockage(long userId){
-		return this.stockageDao.getAll(userId);
+	public List<ArticleStockage> getArticleStockages(String key, long userId){
+		return this.stockageDao.getArticleStockages(key, userId);
 	}
 	
 	@Override
@@ -49,7 +49,8 @@ public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> im
 	
 	@Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
-	public ArticleStockage createArticleStockage(ArticleStockage articleStockage, long userId){
+	public ArticleStockage createArticleStockage(ArticleStockageDTO articleStockageDTO, long userId){
+		ArticleStockage articleStockage = dozerMapper.map(articleStockageDTO, ArticleStockage.class);
 		Utilisateur utilisateur = utilisateurDao.findById(userId);
 		articleStockage.setUtilisateur(utilisateur);
 		
@@ -71,13 +72,6 @@ public class StockageServiceImpl extends AbstractServiceImpl<ArticleStockage> im
 			return this.stockageDao.save(articleStockage);
 		}
 	}
-
-	@Override
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)
-	public ArticleStockage saveArticleStokage(ArticleStockage articleStockage) {
-		return this.stockageDao.save(articleStockage);
-	}
-	
 
 	@Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = DaigouException.class)

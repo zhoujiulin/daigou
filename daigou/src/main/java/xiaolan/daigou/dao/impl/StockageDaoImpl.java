@@ -10,9 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import xiaolan.daigou.dao.StockageDao;
-import xiaolan.daigou.model.entity.ArticleModel;
 import xiaolan.daigou.model.entity.ArticleStockage;
-import xiaolan.daigou.model.entity.Utilisateur;
 
 @Repository
 @Transactional
@@ -41,6 +39,19 @@ public class StockageDaoImpl  extends BaseDaoImpl<ArticleStockage> implements St
 	public List<ArticleStockage> getAllStockageSelectable(long idUser) {
 		try {
 	        String sql = " from ArticleStockage as a where a.countStockageFranceAvailable > 0 and a.utilisateur.idUser = ?";
+	        Query query = em.createQuery(sql, this.clazz);
+	        query.setParameter(0, idUser);
+	        
+			return query.getResultList();
+		} catch (NoResultException e) {
+            return new ArrayList<ArticleStockage>();
+        }
+	}
+
+	@Override
+	public List<ArticleStockage> getArticleStockages(String key, long idUser) {
+		try {
+	        String sql = " from ArticleStockage as a where a.nameArticleStockage like '%" + key + "%' and a.utilisateur.idUser = ?";
 	        Query query = em.createQuery(sql, this.clazz);
 	        query.setParameter(0, idUser);
 	        

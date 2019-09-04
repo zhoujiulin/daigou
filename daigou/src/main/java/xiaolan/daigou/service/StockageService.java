@@ -8,13 +8,11 @@ import xiaolan.daigou.model.entity.ArticleStockage;
 
 public interface StockageService extends AbstractService<ArticleStockage> {
 
-	List<ArticleStockage> getAllStockage(long userId);
+	List<ArticleStockage> getArticleStockages(String key, long userId);
 	
 	List<ArticleStockage> getAllStockageSelectable(long userId);
 	
-	ArticleStockage createArticleStockage(ArticleStockage articleStockage, long userId);
-	
-	ArticleStockage saveArticleStokage(ArticleStockage articleStockage);
+	ArticleStockage createArticleStockage(ArticleStockageDTO articleStockage, long userId);
 
 	ArticleStockage findByNameArticleStockage(String nameArticleStockage, long idUser);
 	
