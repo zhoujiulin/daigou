@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://dozer.sourceforge.net"
+          xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping>
+		<class-a>xiaolan.daigou.domain.entity.Client</class-a>
+		<class-b>xiaolan.daigou.domain.dto.ClientDTO</class-b>
+	</mapping>
+	<mapping>
+		<class-a>xiaolan.daigou.domain.entity.Article</class-a>
+		<class-b>xiaolan.daigou.domain.dto.ArticleDTO</class-b>
+	</mapping>
+	<mapping>
+		<class-a>xiaolan.daigou.domain.entity.Commande</class-a>
+		<class-b>xiaolan.daigou.domain.dto.CommandeDTO</class-b>
+	</mapping>
+	<mapping>
+		<class-a>xiaolan.daigou.domain.entity.Utilisateur</class-a>
+		<class-b>xiaolan.daigou.domain.dto.UtilisateurDTO</class-b>
+	</mapping>
+	<mapping>
+		<class-a>xiaolan.daigou.domain.entity.ArticleStockage</class-a>
+		<class-b>xiaolan.daigou.domain.dto.ArticleStockageDTO</class-b>
+	</mapping>
+	<mapping>
+		<class-a>xiaolan.daigou.domain.entity.Colis</class-a>
+		<class-b>xiaolan.daigou.domain.dto.ColisDTO</class-b>
+	</mapping>
+</mappings>
